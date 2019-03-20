@@ -1,15 +1,16 @@
 <template>
-  <div class="test">
-   {{msg}}
-   <p>{{test}}</p>
-   <p>{{num>6?'hahah':'emmm'}}{{num}}</p>
-   <button v-on:click="addnum">click here</button>
+  <div class="graduate">
+    <sidemenu class='sidemenu'></sidemenu>
+    <p>为了看出来这个页面到底是什么东西：   离校管理</p>
+   <div class="ce"></div>
   </div>
 </template>
 
 <script>
+import sidemenu from '@/components/sidemenu';
+
 export default {
-  name: 'test',
+  name: 'graduate',
   data () {
     return {
       msg: 'for test!!!',
@@ -17,6 +18,7 @@ export default {
       num:5
     }
   },
+  components:{sidemenu},
   methods : {
       addnum :function(){
           this.num++;
@@ -25,3 +27,20 @@ export default {
   
 }
 </script>
+
+<style>
+.graduate{
+  background-color:  rgb(248, 248, 248);
+  position: relative;
+  height: 800px;
+}
+/* .sidemenu{
+  position: fixed;
+  top:50px;
+} */
+.ce{
+  width: 100%;
+  height: 600px;
+  
+}
+</style>
