@@ -76,6 +76,9 @@ export default {
   list-style: none;
   line-height: 35px;
 }
+.side-menu li:hover{
+  cursor: pointer;
+}
 .ant-divider-horizontal {
   margin: 4px 0;
 }

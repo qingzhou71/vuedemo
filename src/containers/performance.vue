@@ -32,7 +32,7 @@
         </a-col>
       </a-row>
       <div class='search'>
-        <a-button type='primary'>查询</a-button> 
+        <a-button type='primary' @click='searchsubmit'>查询</a-button> 
       </div>
       <scorelist></scorelist>
     </a-card>
@@ -66,6 +66,10 @@ export default {
     },
     semesterChange(){
 
+    },
+    searchsubmit(){
+      // 以保存的查询条件来请求数据，或许不在这里，但方法是这样的，获取到后将数据存入data 变量中，以props传到scroelist组件，watch监测
+      //数据变化，动态渲染列表。
     }
   }
 };
