@@ -1,5 +1,6 @@
 <template>
   <div class="test">
+
     <div class='register-img'>这里会是一张好看有趣的图</div>
      <a-menu
     v-model="current"
@@ -38,6 +39,7 @@
     <xupt></xupt>
   </div>
   </a-card>
+
   </div>
 </template>
 
@@ -46,6 +48,7 @@
 
 
 <script>
+
 import drawer from "@/components/drawer";
 import menulist from "@/components/menu";
 import sidemenu from '@/components/sidemenu';
@@ -54,12 +57,15 @@ import xupt from '@/components/xupt';
 export default {
   name: "test",
   data() {
+
+
     return {
       current:['mail'],
       timer:false , //timer的值最终取决于时间，固定时间前为true，否则为false
       toprocess:true
     };
   },
+
   components: { drawer, menulist,sidemenu,process,xupt },
   methods: {
     addnum: function() {
@@ -72,9 +78,11 @@ export default {
       // document.body.clientHeight 为屏幕可用高度，可以根据这个数值来设置页面的最小高度
 
      }
+
   }
 };
 </script>
+
 
 
  <style>
@@ -119,3 +127,4 @@ export default {
 
 }
 </style>
+
