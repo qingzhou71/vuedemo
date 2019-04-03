@@ -108,6 +108,9 @@ width: 100%;
   border: none;
   width: 80%;
   margin: 0 auto;
+
+  max-width: 400px;
+
 }
 </style>
 
