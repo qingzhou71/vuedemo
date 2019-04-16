@@ -1,5 +1,6 @@
 <template>
   <div class="test">
+
     <div class='register-img'>这里会是一张好看有趣的图</div>
      <a-menu
     v-model="current"
@@ -38,6 +39,7 @@
     <xupt></xupt>
   </div>
   </a-card>
+
   </div>
 </template>
 
@@ -46,6 +48,7 @@
 
 
 <script>
+
 import drawer from "@/components/drawer";
 import menulist from "@/components/menu";
 import sidemenu from '@/components/sidemenu';
@@ -54,6 +57,8 @@ import xupt from '@/components/xupt';
 export default {
   name: "test",
   data() {
+
+
     return {
       current:['mail'],
       timer:false , //timer的值最终取决于时间，固定时间前为true，否则为false
@@ -61,6 +66,7 @@ export default {
       
     };
   },
+
   components: { drawer, menulist,sidemenu,process,xupt },
   beforeCreate(){
     
@@ -83,9 +89,11 @@ export default {
        sessionStorage.setItem('topprocess',true);
        
      }
+
   }
 };
 </script>
+
 
 
  <style>
@@ -134,3 +142,4 @@ export default {
 
 }
 </style>
+

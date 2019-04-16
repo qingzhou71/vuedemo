@@ -131,7 +131,9 @@ export default {
   border: none;
   width: 80%;
   margin: 0 auto;
+
   max-width: 400px;
+
 }
 .refresh {
   font-size: 12px;
