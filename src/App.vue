@@ -21,6 +21,9 @@ body{
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   overflow: hidden;
+  height: 100%;
+  /* overflow: none !important; */
+  overflow: unset;
 }
 /* @media screen and (min-width: 560px) {
     #app {
