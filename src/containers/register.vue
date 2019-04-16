@@ -21,7 +21,9 @@
   <div v-if="current[0]==='mail'">
     <div v-if='timer'>还没有组件，还没到报道的时间，所以这里什么都没有，不如去看看西柚的那些事吧</div>
     <div v-else>
-      <div v-if='toprocess'>
+
+      <div v-if='!toprocess'>
+
         <span>这里是注册流程的注意事项哦</span><a-icon type="pushpin" />
         <ul class='tips-ul'>
           <li>1.这里是文字</li>
@@ -30,7 +32,9 @@
           <li>4.这里依旧是文字,但是字数要多一点，因为我想要看效果</li>
           <li>5.这里仍然是文字</li>
         </ul>
-        <a-button class='forsure' type='primary'>知道了，去报道！</a-button>
+
+        <a-button class='forsure' type='primary' @click="start">知道了，去报道！</a-button>
+
       </div>
     <div v-else><process :msg=234></process></div>
     </div>
@@ -62,11 +66,22 @@ export default {
     return {
       current:['mail'],
       timer:false , //timer的值最终取决于时间，固定时间前为true，否则为false
-      toprocess:true
+
+      toprocess:sessionStorage.getItem('topprocess'),
+      
+
     };
   },
 
   components: { drawer, menulist,sidemenu,process,xupt },
+
+  beforeCreate(){
+    
+  },
+  created(){
+    
+  },
+
   methods: {
     addnum: function() {
       this.$router.push({ path: "/navigate" });
@@ -76,6 +91,12 @@ export default {
       //  console.log(window.screen.availHeight);
       //  console.log(window.screen.height);
       // document.body.clientHeight 为屏幕可用高度，可以根据这个数值来设置页面的最小高度
+
+     },
+     start(){
+       this.toprocess=true;
+       sessionStorage.setItem('topprocess',true);
+       
 
      }
 
@@ -105,6 +126,12 @@ export default {
 }
 .re-card{
   min-height: 575px;
+
+  width: 100% !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+
+
 }
 .re-card .ant-card-body{
   padding: 15px ;
