@@ -134,6 +134,7 @@ export default {
 
   max-width: 400px;
 
+
 }
 .refresh {
   font-size: 12px;
@@ -144,6 +145,7 @@ export default {
 .refresh:hover {
   color: blue;
   cursor: pointer;
+
 }
 </style>
 
