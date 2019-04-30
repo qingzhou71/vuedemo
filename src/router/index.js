@@ -10,11 +10,13 @@ import admin from '@/containers/user/admin'
 import resource from '@/containers/admin/resource'
 import department from '@/containers/admin/department'
 import managers from '@/containers/admin/managers'
-import campus from '@/containers/admin/campus'
-import institution from '@/containers/campus/institution'
-import major from '@/containers/campus/major'
-import dormitory from '@/containers/campus/dormitory'
-import location from '@/containers/campus/location'
+// import campus from '@/containers/admin/campus'
+// import institution from '@/containers/campus/institution'
+// import major from '@/containers/campus/major'
+// import dormitory from '@/containers/campus/dormitory'
+// import location from '@/containers/campus/location'
+import manager from '@/containers/user/manager'
+import info from '@/containers/user/info'
 
 
 if(!window.Promise){
@@ -33,6 +35,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
+    },
+    {
+      path:'/info',
+      name:'info',
+      component:info
     },
     {
       path:'/register',
@@ -55,6 +62,11 @@ export default new Router({
       component:graduate
     },
     {
+      path:'/managers',
+      name:manager,
+      component:manager,
+    },
+    {
       path:'/admin',
       name:'admin',
       component:admin,
@@ -74,35 +86,35 @@ export default new Router({
           path:'/admin/managers',
           name:'managers',
           component:managers
-        },
-        {
-          path:'/admin/campus',
-          name:'campus',
-          component:campus,
-          redirect:'/admin/campus/institution',
-          children:[
-            {
-              path:'/admin/campus/institution',
-              name:'institution',
-              component:institution
-            },
-            {
-              path:'/admin/campus/major',
-              name:'major',
-              component:major
-            },
-            {
-              path:'/admin/campus/dormitory',
-              name:'dormitory',
-              component:dormitory 
-            },
-            {
-              path:'/admin/campus/location',
-              name:'location',
-              component:location
-            }
-          ]
         }
+        // {
+        //   path:'/admin/campus',
+        //   name:'campus',
+        //   component:campus,
+        //   redirect:'/admin/campus/institution',
+        //   children:[
+        //     {
+        //       path:'/admin/campus/institution',
+        //       name:'institution',
+        //       component:institution
+        //     },
+        //     {
+        //       path:'/admin/campus/major',
+        //       name:'major',
+        //       component:major
+        //     },
+        //     {
+        //       path:'/admin/campus/dormitory',
+        //       name:'dormitory',
+        //       component:dormitory 
+        //     },
+        //     {
+        //       path:'/admin/campus/location',
+        //       name:'location',
+        //       component:location
+        //     }
+        //   ]
+        // }
       ]
     }
   ]

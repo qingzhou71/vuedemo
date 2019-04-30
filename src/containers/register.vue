@@ -49,8 +49,7 @@
 
 <script>
 
-import drawer from "@/components/drawer";
-import menulist from "@/components/menu";
+
 import sidemenu from '@/components/sidemenu';
 import process from '@/components/registerProcess';
 import xupt from '@/components/xupt';
@@ -67,7 +66,7 @@ export default {
     };
   },
 
-  components: { drawer, menulist,sidemenu,process,xupt },
+  components: { sidemenu,process,xupt },
   beforeCreate(){
     
   },
@@ -103,9 +102,9 @@ export default {
   position: relative;
   background-color: rgb(248, 248, 248);
 }
-.sidemenu{
+/* .sidemenu{
   position: absolute;
-}
+} */
 .register-img{
   width: 100%;
   height: 100px;
@@ -118,7 +117,7 @@ export default {
   min-height: 575px;
   width: 100% !important;
   margin: 0 !important;
-  max-width: 100% !important;
+  max-width: unset !important;
 
 }
 .re-card .ant-card-body{
@@ -134,12 +133,20 @@ export default {
   margin: 20px 15%;
   min-width: 140px;
 }
-@media screen and (min-width: 430px){
+@media screen and (min-width: 600px){
   .forsure{
     width: 300px;
     margin: 20px;
   }
-
+  .test{
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 2%;
+  }
+}
+@media screen and (min-width){
+  
 }
 </style>
 

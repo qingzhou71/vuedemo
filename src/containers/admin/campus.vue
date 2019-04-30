@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class='campus'>
     
     <router-view/>
   </div>
@@ -8,3 +8,9 @@
 <script>
 export default {};
 </script>
+
+<style>
+.campus{
+  width: 100% !important;
+}
+</style>

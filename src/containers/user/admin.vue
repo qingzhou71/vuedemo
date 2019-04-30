@@ -22,10 +22,6 @@ export default {
       case 'resource':this.SelectedKeys=['1'];break
       case 'department':this.SelectedKeys=['2'];break
       case 'managers':this.SelectedKeys=['3'];break
-      case 'campus/institution':this.SelectedKeys=['5'];break
-      case 'campus/major':this.SelectedKeys=['6'];break
-      case 'campus/dormitory':this.SelectedKeys=['7'];break
-      case 'campus/location':this.SelectedKeys=['8'];break
     }
   },
   beforeUpdate(){
@@ -34,10 +30,6 @@ export default {
       case 'resource':this.SelectedKeys=['1'];break
       case 'department':this.SelectedKeys=['2'];break
       case 'managers':this.SelectedKeys=['3'];break
-      case 'campus/institution':this.SelectedKeys=['5'];break
-      case 'campus/major':this.SelectedKeys=['6'];break
-      case 'campus/dormitory':this.SelectedKeys=['7'];break
-      case 'campus/location':this.SelectedKeys=['8'];break
     }
   }
 };

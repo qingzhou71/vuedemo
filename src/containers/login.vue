@@ -1,7 +1,8 @@
 <template>
   <div class="hello">
     <router-link to="/register">to test</router-link>
-    <a-card>
+    <a-card class='login'>
+      <div class='login-in'>登录</div>
       <a-form
         id="components-form-demo-normal-login"
         :form="form"
@@ -11,10 +12,11 @@
         <a-form-item class="login-form-item">
           <a-input
             v-decorator="[
-          'userName',
+          'username',
           { rules: [{ required: true, message: '你还没有输入账号!' }] }
         ]"
             placeholder="请输入账号"
+            size='large'
           >
             <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
           </a-input>
@@ -27,6 +29,7 @@
         ]"
             type="password"
             placeholder="请输入密码"
+            size='large'
           >
             <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
           </a-input>
@@ -40,9 +43,10 @@
           { rules: [{ required: true, message: '请输入验证码!' }] }
         ]"
               placeholder="请输入验证码"
+              size='large'
             />
-            <img :src="src" style="width:100px;margin-right:5px">
-            <div class="refresh" @click="refresh">换一张</div>
+            <img :src="src" style="width:100px;margin-right:5px" title="看不清，换一张" @click="refresh">
+            <!-- <div class="refresh" @click="refresh">换一张</div> -->
           </div>
         </a-form-item>
 
@@ -57,7 +61,7 @@
         ]"
           >记住我</a-checkbox>
           <a class="login-form-forgot" href>忘记密码</a>
-          <a-button type="primary" html-type="submit" class="login-form-button">登录</a-button>
+          <a-button type="primary" html-type="submit" class="login-form-button" size='large'>登录</a-button>
         </a-form-item>
       </a-form>
     </a-card>
@@ -76,7 +80,8 @@ export default {
     return {
       msg: "Welcome to Your Vue.js App",
       test: "i will",
-      src: "http://demo.nat200.top/code/image"
+      src: "http://demo.nat200.top/code/image",
+      infosure:localStorage.getItem('info')
     };
   },
   methods: {
@@ -87,17 +92,25 @@ export default {
           console.log("Received values of form: ", values); // 拿到values，通过Ajax来调用接口，传参values
           // console.log(values.rememberMe);
           console.log(values.rememberme)
-          fetch(`http://demo.nat200.top/authentication/form`, {
-            method: "POST",
-             headers:{'Access-Control-Allow-Origin':'*'},
-            body: {
-              'username': values.username,
-              'password': values.password,
-              'imageCode': values.imageCode,
-              'remember-me': values.rememberme
-            }
-          });
-          this.$router.push({ path: "/register" });
+          console.log(values.username)
+          // fetch(`http://demo.nat200.top/authentication/form?username=${values.username}&password=${values.password}`, {
+          //   method: "POST",
+          //    headers:{'Access-Control-Allow-Origin':'*'},
+          //    credentials: 'include',
+          //   body: {
+          //     'username': values.username,
+          //     'password': values.password,
+          //     'imageCode': values.imageCode,
+          //     'remember-me': values.rememberme
+          //   }
+          // });  then里拿到返回的身份认证，存入localstorage，在每个页面的挂载前验证身份，做以权限
+          console.log(this.infosure);
+          if(this.infosure){
+            this.$router.push({ path: "/register" });
+          }
+          else{
+            this.$router.push({ path: "/info" });
+          }
         }
       });
     },
@@ -111,13 +124,20 @@ export default {
 <style>
 .hello {
   width: 100%;
+  height:100%;
+  background-image:url('../assets/3.jpg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  
 }
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
+
 }
 #components-form-demo-normal-login .login-form-item {
   width: 100%;
-  margin: 10px 0;
+ 
+  margin: 30px 0;
 }
 #components-form-demo-normal-login .login-form-forgot {
   /* display: block; */
@@ -125,14 +145,15 @@ export default {
 }
 #components-form-demo-normal-login .login-form-button {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 30px;
 }
-.ant-card-bordered {
+.login{
   border: none;
   width: 80%;
-  margin: 0 auto;
-
+  height: 500px;
+  margin: 100px auto;
   max-width: 400px;
+  background:rgb(255,255,255,0.65);
 
 }
 .refresh {
@@ -142,8 +163,13 @@ export default {
   margin-top: 30px;
 }
 .refresh:hover {
-  color: blue;
+  color: rgb(0, 0, 255);
   cursor: pointer;
+}
+.login-in{
+  font-size: 29px;
+  width: 100%;
+  text-align: center;
 }
 </style>
 
