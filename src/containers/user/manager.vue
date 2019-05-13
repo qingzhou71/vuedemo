@@ -4,6 +4,7 @@
     :select='SelectedKeys'
     @test='testfunction'
     :menu='menu'
+    v-if='menushow'
     >
     </managermenu>
     <operation v-if='operationselect' :department='department'/>
@@ -28,10 +29,10 @@ export default {
     return{
       SelectedKeys:[0],
       department:'学院',
-      menu:['业务管理','注册管理','流程管理'], // menu是资源得获取，在data初始化前
-      
+      menu:['流程管理'], // menu是资源得获取，在data初始化前
       operationselect:true,
-      reselect:false
+      reselect:false,
+      menushow:true
     }
   },
   beforeCreate(){
@@ -40,7 +41,15 @@ export default {
 
   },
   created(){
-    
+    if(this.menu.length===1){
+      this.menushow=false;
+      if(this.menu[0]==='业务管理'){
+        this.operationselect=true;this.reselect=false
+      }
+      else{
+        this.operationselect=false;this.reselect=false;
+      }
+    }
   },
   beforeUpdate(){
    

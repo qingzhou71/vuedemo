@@ -7,7 +7,6 @@
     mode="horizontal"
   >
     <a-menu-item key="mail" @click="changeitem">
-      <!-- 图标待改动，找到合适的就改 -->
       <a-icon type="mail" />带你去报道
     </a-menu-item>
     <a-menu-item key="app"   @click="changeitem">
@@ -19,7 +18,7 @@
   </a-menu>
   <a-card class='re-card'>
   <div v-if="current[0]==='mail'">
-    <div v-if='timer'>还没有组件，还没到报道的时间，所以这里什么都没有，不如去看看西柚的那些事吧</div>
+    <div v-if='timer'><perpare></perpare></div>
     <div v-else>
       <div v-if='!toprocess'>
         <span>这里是注册流程的注意事项哦</span><a-icon type="pushpin" />
@@ -32,26 +31,20 @@
         </ul>
         <a-button class='forsure' type='primary' @click="start">知道了，去报道！</a-button>
       </div>
-    <div v-else><process :msg=234></process></div>
+    <div v-else><registerProcess></registerProcess></div>
     </div>
   </div>
   <div  v-else-if="current[0]==='app'">
     <xupt></xupt>
   </div>
+  <personal v-else></personal>
   </a-card>
 
   </div>
 </template>
-
-
-
-
-
 <script>
-
-
 import sidemenu from '@/components/sidemenu';
-import process from '@/components/registerProcess';
+import registerProcess from '@/components/registerProcess';
 import xupt from '@/components/xupt';
 export default {
   name: "test",
@@ -66,7 +59,7 @@ export default {
     };
   },
 
-  components: { sidemenu,process,xupt },
+  components: { sidemenu,registerProcess,xupt },
   beforeCreate(){
     
   },
@@ -75,7 +68,7 @@ export default {
   },
   methods: {
     addnum: function() {
-      this.$router.push({ path: "/navigate" });
+      this.$router.push({ path: "/introduction" });
      },
      changeitem({key}){
        this.current=[key];

@@ -1,6 +1,7 @@
 <template>
   <div class="maregister">
     <a-card class="maregistercard">
+      <signout class="manager-singnout"></signout>
       <a-input-search class="searchuser" placeholder="输入用户名进行查询" @search="onSearch" size="large"/>
       <div v-if="searchdata.username" class="userinfo">
         <a-row class="userlist">
@@ -20,6 +21,9 @@
 </template>
 
 <script>
+
+import signout from "@/components/signout";
+
 const columns = [
   {
     title: "学号",
@@ -49,33 +53,63 @@ const columns = [
 
 const datas = [
   {
-    username: "0123",
+    username: "03151111",
     name: "测试一",
     campus: "通信与信息工程学院",
     major: "通信工程",
-    dormitory: "长智",
+    dormitory: "长智一号楼",
     political: "群众",
-    key: "0123",
+    key: "03151111",
     register: true
   },
   {
-    username: "4567",
+    username: "03150202",
     name: "测试二",
     campus: "通信与信息工程学院",
-    major: "通信工程",
-    dormitory: "长智",
-    political: "群众",
-    key: "4567",
+    major: "信息安全",
+    dormitory: "长智二号楼",
+    political: "预备党员",
+    key: "03150202",
     register: false
   },
   {
-    username: "8989",
+    username: "03150001",
     name: "测试三",
-    campus: "通信与信息工程学院",
-    major: "通信工程",
-    dormitory: "长智",
+    campus: "电子工程学院",
+    major: "电子信息工程",
+    dormitory: "长智四号楼",
     political: "群众",
-    key: "8989",
+    key: "03150001",
+    register: true
+  },
+  {
+    username: "03150278",
+    name: "测试四",
+    campus: "电子工程学院",
+    major: "微电子学系",
+    dormitory: "长智四号楼",
+    political: "群众",
+    key: "03150278",
+    register: true
+  },
+  {
+    username: "03150223",
+    name: "测试五",
+    campus: "经济与管理学院",
+    major: "经济学",
+    dormitory: "长智二号楼",
+    political: "共青团员",
+    key: "03150223",
+    register: true
+  },
+  {
+    username: "03151021",
+    name: "测试六",
+    campus: "经济与管理学院",
+    major: "工商管理",
+    dormitory: "长智二号楼",
+    political: "中共党员",
+    key: "03151021",
     register: true
   }
 ];
@@ -88,6 +122,7 @@ export default {
       searchdata: {}
     };
   },
+  components:{signout},
   methods: {
     onSearch(value) {
       console.log(value);
@@ -96,6 +131,7 @@ export default {
     },
     register(){
         console.log(this.searchdata.username);
+        this.searchdata.register=false;
         // 根据学号put更改学生信息，then get信息，
     }
   }
@@ -123,6 +159,10 @@ export default {
   margin-bottom: 50px;
   border-radius: 10px;
   padding: 10px;
+  /* font-size: 17px; */
+}
+.userinfo .ant-table{
+  font-size: 15px;
 }
 .userlist {
   font-size: 18px;
@@ -136,5 +176,10 @@ export default {
 }
 .usertable {
   font-size: 16px;
+}
+.manager-singnout {
+  position: absolute;
+  top: 20px;
+  right: 5px;
 }
 </style>

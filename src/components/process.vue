@@ -1,6 +1,7 @@
 <template>
   <div class="process">
     <a-card class="processcard">
+      <signout class="manager-singnout"></signout>
       <h1 class="title">流程管理:</h1>
       <div class="listboard">
         <!-- <a-list itemLayout="horizontal" :dataSource="campusdata">
@@ -11,7 +12,7 @@
         <div v-for="(item,index) in campusdata" :key="index" class="pocesslist">
           <h2>{{item.campusname}}</h2>
           <span class="edit">
-            <a-icon type="edit" @click="()=>editprocess(item.process,index)"/>
+            <a-icon type="edit" @click="()=>editprocess(item.process,index,item.campusname)"/>
           </span>
           <div v-if='!item.process.length' class='note'>暂时没有流程，去设置流程吧</div>
           <div v-else class='processnote'>流程示意：</div>
@@ -24,16 +25,33 @@
 
       <div v-show="edit" class="cover"></div>
       <div v-show="edit" class="editprocess">
-        <a-form :form="form" @submit="handleSubmit">
+        <a-form :form="form" @submit="handleSubmit"  >
+          <a-form-item class='campusname'>{{currentcampusname}}:</a-form-item>
           <a-form-item
             v-for="(k, index) in steps"
             :key="index"
             v-bind="formItemLayoutWithOutLabel"
             class="stepinput"
             :required="false"
+           
           >
             step{{index+1}}
-            <a-input
+            <a-select
+            v-decorator="[
+            `names[${index}]`,
+            {
+              initialValue:k.name,
+              rules:[{
+                required:true,
+                whitespace: true,
+                message:'内容不能为空，如不需要请删除此项'
+              }]
+            }
+            ]"
+            >
+            <a-select-option v-for='(item) in locations' :key='item.name'>{{item.name}}</a-select-option>
+            </a-select>
+            <!-- <a-input
               v-decorator="[
           `names[${index}]`,
           {
@@ -48,7 +66,8 @@
         ]"
               placeholder="填写地点"
               style="width: 60%; margin-right: 8px"
-            />
+              
+            /> -->
             <a-icon
               v-if="index> 0"
               class="dynamic-delete-button"
@@ -71,42 +90,45 @@
 </template>
 
 <script>
+import signout from "@/components/signout";
 let id = 3;
 const campusdata = [
   {
     campusid: "10",
     campusname: "通信与信息工程学院",
     process: [
-      { sep: 1, name: "111", key: 0 },
-      { sep: 2, name: "222", key: 1 },
-      { sep: 3, name: "333", key: 2 }
+      { sep: 1, name: "学院办事处", key: 0 },
+      { sep: 2, name: "财务办", key: 1 },
+      { sep: 3, name: "宿舍管理处", key: 2 }
     ]
   },
   {
     campusid: "11",
     campusname: "电子工程学院",
     process: [
-      { sep: 1, name: "444", key: 0 },
-      { sep: 2, name: "555", key: 1 },
-      { sep: 3, name: "666", key: 2 }
+      { sep: 1, name: "财务办", key: 0 },
+      { sep: 2, name: "学院办事处", key: 1 },
+      { sep: 3, name: "教务处", key: 2 },
+      { sep: 4, name: "宿舍管理处", key: 3 }
     ]
   },
   {
     campusid: "12",
     campusname: "自动化学院",
     process: [
-      { sep: 1, name: "77777777777777", key: 0 },
-      { sep: 2, name: "888", key: 1 },
-      { sep: 3, name: "999", key: 2 }
+      { sep: 1, name: "财务处", key处: 0 },
+      { sep: 2, name: "学院办事处", key: 1 },
+      { sep: 3, name: "宿舍管理处", key: 2 },
+      { sep: 4, name: "武装部", key: 3 }
     ]
   },
   {
     campusid: "13",
     campusname: "人文社科学院",
     process: [
-      { sep: 1, name: "000", key: 0 },
-      { sep: 2, name: "123", key: 1 },
-      { sep: 3, name: "234", key: 2 }
+      { sep: 1, name: "学院办事处", key: 0 },
+      { sep: 2, name: "财务处", key: 1 },
+      { sep: 3, name: "宿舍管理处", key: 2 }
     ]
   },
   {
@@ -121,6 +143,7 @@ export default {
   data() {
     return {
       campusdata: campusdata,
+      currentcampusname:'',
       currentindex:0,
       steps: [
         { sep: 1, name: "as", key: 0 },
@@ -133,12 +156,31 @@ export default {
           xs: { span: 24, offset: 0 },
           sm: { span: 20, offset: 4 }
         }
-      }
+      },
+      locations:[
+        {
+          name:'通信与信息管理学院',
+          id:'12'
+        },
+        {
+          name:'财务部',
+          id:'12'
+        },
+        {
+          name:'后勤管理处',
+          id:'12'
+        },
+        {
+          name:'宿舍管理处',
+          id:'12'
+        }
+      ]
     };
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
+  components:{signout},
   methods: {
     remove(k) {
       const { form } = this;
@@ -150,6 +192,7 @@ export default {
       console.log(k);
       this.steps.splice(k, 1);
       console.log(this.steps);
+      // this.form.resetFields();
     },
 
     add() {
@@ -171,16 +214,20 @@ export default {
             item.name = values.names[index];
             item.key = index + 1;
           });
-        }
-        console.log(this.steps[0].name);
+           console.log(this.steps[0].name);
         // console.log(this.steps[3].name);
         console.log(this.currentindex)
         this.campusdata.process=this.steps;
+        this.edit = false;
+        this.form.resetFields();
+        }
+       
       });
-      this.edit = false;
+      
     },
-    editprocess(step,index) {
-        this.currentindex=index
+    editprocess(step,index,campusname) {
+        this.currentindex=index;
+        this.currentcampusname=campusname;
         this.steps=step;
         console.log(this.steps);
         this.edit=true;
@@ -202,6 +249,7 @@ export default {
   position: relative;
   z-index: 1;
   overflow: auto;
+  padding: 10px 20px;
 }
 .dynamic-delete-button {
   cursor: pointer;
@@ -273,5 +321,28 @@ export default {
     /* position: absolute; */
     font-size: 16px;
     top:20px;
+}
+.edit {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.edit:hover{
+  color: blue;
+}
+.campusname{
+  font-size: 16px;
+  margin-left: 20px;
+}
+.manager-singnout {
+  position: absolute;
+  top: 20px;
+  right: 5px;
+}
+.editprocess form .ant-select, form .ant-cascader-picker{
+  width: 55%;
+  margin-right: 30px
 }
 </style>

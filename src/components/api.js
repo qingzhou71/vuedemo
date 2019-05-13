@@ -8,6 +8,23 @@ export function addcampus(refs,dataSource,that){
         }
         console.log('Received values of form: ', values);
         dataSource.push(values);  // 应该是fetch到的新数据 先以values为参数post请求，在请求成功后get新的数据
+        fetch(`http://demo.nat200.top/admin/campus`,{
+            method:'POST',
+            body:{
+              'name':values.name
+            }
+        }).then(res=>{
+            return res.json();
+        }).then(data=>{
+          fetch(`http://demo.nat200.top/admin/campus`,{
+            method:'GET',
+
+        }).then(res=>{
+            return res.json();
+        }).then(data=>{
+            dataSource=data;
+        })
+    }),
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });
@@ -23,12 +40,35 @@ export function addmajor(refs,that){
         }
         console.log('Received values of form: ', values);
       //  dataSource.push(values);  // 应该是fetch到的新数据
-      params.name = values.name;
+       params.name = values.name;
         // params.createdTime=values.createdTime;
         params.campus = values.campus;
         params.key = values.name;
         console.log(params);
         that.datas.push(params);
+        fetch(`http://demo.nat200.top/admin/major`,{
+            method:'POST',
+            body:{
+              'name':values.name,
+              'campus':values.campus,
+            }
+        }).then(res=>{
+            return res.json();
+        }).then(data=>{
+          fetch(`http://demo.nat200.top/admin/major`,{
+            method:'GET',
+
+        }).then(res=>{
+            return res.json();
+        }).then(data=>{
+            dataSource=data.map((item,index)=>{
+              dataSource[index].name=item.name;
+              dataSource[index].campus=item.campus;
+              dataSource[index].createdTime=item.createdTime;
+              dataSource[index].key=index;
+            });
+        })
+    }),
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });

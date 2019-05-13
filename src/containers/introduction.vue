@@ -1,10 +1,10 @@
 <template>
-  <div class="navigate">
+  <div class="introduction">
    <sidemenu class='sidemenu'></sidemenu>
    
    {{msg}}
    <p>{{test}}</p>
-   <p>为了看出来这个页面到底是什么东西：   校园导航</p>
+   <p>为了看出来这个页面到底是什么东西：  校园介绍 </p>
    <div class='ce'></div>
   </div>
 </template>
@@ -12,11 +12,11 @@
 <script>
 import sidemenu from '@/components/sidemenu';
 export default {
-  name: 'navigate',
+  name: 'introduction',
   data () {
     return {
       msg: 'for test!!!',
-      test:'这里是导航啊',
+      test:'这里是介绍啊',
     }
   },
   components:{sidemenu},
@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style>
-.navigate{
+.introduction{
   background-color:  rgb(248, 248, 248);
   position: relative;
 }

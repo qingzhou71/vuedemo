@@ -90,20 +90,28 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values); // 拿到values，通过Ajax来调用接口，传参values
-          // console.log(values.rememberMe);
-          console.log(values.rememberme)
-          console.log(values.username)
-          // fetch(`http://demo.nat200.top/authentication/form?username=${values.username}&password=${values.password}`, {
-          //   method: "POST",
-          //    headers:{'Access-Control-Allow-Origin':'*'},
-          //    credentials: 'include',
-          //   body: {
-          //     'username': values.username,
-          //     'password': values.password,
-          //     'imageCode': values.imageCode,
-          //     'remember-me': values.rememberme
-          //   }
-          // });  then里拿到返回的身份认证，存入localstorage，在每个页面的挂载前验证身份，做以权限
+        //   fetch(`http://demo.nat200.top/authentication/form?username=${values.username}&password=${values.password}`, {
+        //     method: "POST",
+        //      headers:{'Access-Control-Allow-Origin':'*'},
+        //      credentials: 'include',
+        //     body: {
+        //       'username': values.username,
+        //       'password': values.password,
+        //       'imageCode': values.imageCode,
+        //       'remember-me': values.rememberme
+        //     }
+        //   }).then(res=>{
+        //     localStorage.setItem('role',res.data.role);
+        //     switch(res.data.role){
+        //       case '学生':this.$router.push({path:'/performance'});break
+        //       case '超级管理员':this.$router.push({path:'/admin'});break
+        //       case '业务管理员':this.$router.push({path:'/managers'});break
+        //       default:break;
+        //     }
+        //   }).catch(err=>{
+              
+        //  })
+            //then里拿到返回的身份认证，存入localstorage，在每个页面的挂载前验证身份，做以权限
           console.log(this.infosure);
           if(this.infosure){
             this.$router.push({ path: "/register" });

@@ -44,7 +44,6 @@
           <template slot="del" slot-scope="text, record" class='todo'>
               <a class='edits' @click="showedittable(record.key)"> 修改   </a> 
               <editform
-         
         :visible="editvisible"
         :recorddata="currentdata"
         :name='department'
@@ -79,12 +78,26 @@ require("es6-promise").polyfill();
 require("isomorphic-fetch");
 const dataSource = [
   {
-    name: "注册管理",
-    mark: "something not sure,and for test"
+    name: "通信与信息工程学院",
+    
   },
   {
-    name: "离校管理",
-    mark: "but i want"
+    name: "电子工程学院",
+  },
+  {
+    name: "自动化学院",
+  },
+  {
+    name: "人文社科学院",
+  },
+  {
+    name: "计算机学院",
+  },
+  {
+    name: "马克思主义学院",
+  },
+  {
+    name: "经济与管理学院",
   }
 ]; // 应该为初始化之前get的列表
 const majorcolumns = [
@@ -290,6 +303,7 @@ export default {
   height: 100%;
   position: relative;
   overflow: auto;
+  padding: 0 20px;
 }
 .addplus {
   margin: 20px;
@@ -334,6 +348,8 @@ export default {
 .listboard {
   border: 1px solid rgb(196, 195, 195);
   border-radius: 4px;
+  padding: 0 20px;
+  margin: 0 20px;
   /* overflow: hidden; */
 }
 .manager-singnout {
