@@ -1,16 +1,22 @@
 <template>
   <div class="side-menu" :style="sidestyle">
     <ul class="menu-list">
-      <li :class="{navigateli:naShow}" @click="navigate">校园导航</li>
-      <a-divider></a-divider>
+      
       <li :class="{performanceli:perShow}" @click="performance">成绩查询</li>
       <a-divider></a-divider>
-      <li :class="{graduateli:grShow}" @click="graduate">离校管理</li>
+      <li :class="{introductionli:naShow}" @click="introduction">校园导航</li>
       <a-divider></a-divider>
+      <li :class="{centerli:grShow}" @click="center">离校管理</li>
+      <a-divider></a-divider>
+      <li :class="{introductionli:naShow}" @click="introduction">校园介绍</li>
+      <a-divider></a-divider>
+      <li :class="{centerli:grShow}" @click="center">个人中心</li>
+      <a-divider></a-divider>
+      
     </ul>
     <p
       class="menu-tips"
-    >这里会是有趣的一些小提示，可能是生活常识，也可能是一些有趣的冷知识，暂时不可配置，但之后有时间的话可以做到可配置的。字数应该多，所以啊阿斯顿法国红酒看来去微软推哦怕自行车v不那么</p>
+    >温馨小提示：早上起床后空腹喝一杯温水有助于身体健康哦</p>
     <a-button class="menu-icon" @click="changeicon">
       <a-icon v-show="showicon" type="menu-fold"/>
       <a-icon v-show="!showicon" type="close"/>
@@ -27,9 +33,9 @@ export default {
       sidestyle: {
         marginLeft: "0px"
       },
-      naShow: location.hash.slice(2) === "navigate" ? true : false,
+      naShow: location.hash.slice(2) === "introduction" ? true : false,
       perShow: location.hash.slice(2) === "performance" ? true : false,
-      grShow: location.hash.slice(2) === "graduate" ? true : false
+      grShow: location.hash.slice(2) === "center" ? true : false
     };
   },
   methods: {
@@ -38,14 +44,14 @@ export default {
       this.sidestyle.marginLeft = this.showicon ? "-130px" : "0px";
       console.log(location.hash.slice(2));
     },
-    navigate() {
-      this.$router.push({ path: "/navigate" });
+    introduction() {
+      this.$router.push({ path: "/introduction" });
     },
     performance() {
       this.$router.push({ path: "/performance" });
     },
-    graduate() {
-      this.$router.push({ path: "/graduate" });
+    center() {
+      this.$router.push({ path: "/center" });
     }
   }
 };
@@ -74,7 +80,7 @@ export default {
 }
 .side-menu li {
   list-style: none;
-  line-height: 35px;
+  line-height: 45px;
 }
 .side-menu li:hover{
   cursor: pointer;
@@ -116,9 +122,9 @@ export default {
   border-width: 0;
   outline: none !important;
 }
-.navigateli,
+.introductionli,
 .performanceli,
-.graduateli {
+.centerli {
   background-color: aliceblue;
   color: rgb(54, 129, 241);
 }

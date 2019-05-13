@@ -7,7 +7,6 @@
     mode="horizontal"
   >
     <a-menu-item key="mail" @click="changeitem">
-      <!-- 图标待改动，找到合适的就改 -->
       <a-icon type="mail" />带你去报道
     </a-menu-item>
     <a-menu-item key="app"   @click="changeitem">
@@ -19,7 +18,7 @@
   </a-menu>
   <a-card class='re-card'>
   <div v-if="current[0]==='mail'">
-    <div v-if='timer'>还没有组件，还没到报道的时间，所以这里什么都没有，不如去看看西柚的那些事吧</div>
+    <div v-if='timer'><perpare></perpare></div>
     <div v-else>
 
       <div v-if='!toprocess'>
@@ -36,27 +35,20 @@
         <a-button class='forsure' type='primary' @click="start">知道了，去报道！</a-button>
 
       </div>
-    <div v-else><process :msg=234></process></div>
+    <div v-else><registerProcess></registerProcess></div>
     </div>
   </div>
   <div  v-else-if="current[0]==='app'">
     <xupt></xupt>
   </div>
+  <personal v-else></personal>
   </a-card>
 
   </div>
 </template>
-
-
-
-
-
 <script>
-
-import drawer from "@/components/drawer";
-import menulist from "@/components/menu";
 import sidemenu from '@/components/sidemenu';
-import process from '@/components/registerProcess';
+import registerProcess from '@/components/registerProcess';
 import xupt from '@/components/xupt';
 export default {
   name: "test",
@@ -73,7 +65,8 @@ export default {
     };
   },
 
-  components: { drawer, menulist,sidemenu,process,xupt },
+
+  components: { sidemenu,registerProcess,xupt },
 
   beforeCreate(){
     
@@ -84,7 +77,7 @@ export default {
 
   methods: {
     addnum: function() {
-      this.$router.push({ path: "/navigate" });
+      this.$router.push({ path: "/introduction" });
      },
      changeitem({key}){
        this.current=[key];
@@ -113,9 +106,9 @@ export default {
   position: relative;
   background-color: rgb(248, 248, 248);
 }
-.sidemenu{
+/* .sidemenu{
   position: absolute;
-}
+} */
 .register-img{
   width: 100%;
   height: 100px;
@@ -129,7 +122,8 @@ export default {
 
   width: 100% !important;
   margin: 0 !important;
-  max-width: 100% !important;
+
+  max-width: unset !important;
 
 
 }
@@ -146,12 +140,20 @@ export default {
   margin: 20px 15%;
   min-width: 140px;
 }
-@media screen and (min-width: 430px){
+@media screen and (min-width: 600px){
   .forsure{
     width: 300px;
     margin: 20px;
   }
-
+  .test{
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 2%;
+  }
+}
+@media screen and (min-width){
+  
 }
 </style>
 

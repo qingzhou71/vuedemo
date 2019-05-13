@@ -1,6 +1,9 @@
 <template>
   <div class="managers">
     <a-card class="managerscard">
+
+      <signout class='admin-singnout'></signout>
+
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加管理员
       </a-button>
@@ -32,6 +35,9 @@
   </div>
 </template>
 <script>
+
+import signout from '@/components/signout'
+
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 const columns = [
@@ -57,15 +63,7 @@ const columns = [
     scopedSlots: { customRender: "del" }
   }
 ];
-// const datas = [
-//   {
-//     key: "1",
-//     name: "测试一",
-//     username: "123344",
-//     password: "6778888",
-//     department: "后勤处"
-//   }
-// ];
+
 const CollectionCreateForm = {
   props: ["visible", "resourcelist"],
   beforeCreate() {
@@ -121,7 +119,9 @@ const CollectionCreateForm = {
               }
             ]"
           >
-          <a-select-option v-for='(item,index) in resourcelist' :key='item'>{{item}}</a-select-option>
+
+          <a-select-option v-for='(item,index) in resourcelist' :key='item.id'>{{item.name}}</a-select-option>
+
           </a-select>
         </a-form-item>
         <a-form-item label='备注'>
@@ -137,14 +137,18 @@ const CollectionCreateForm = {
 };
 
 export default {
-  components: { CollectionCreateForm },
+
+  components: { CollectionCreateForm ,signout},
+
   beforeCreate() {
     // get请求进行数据的初始化，资源，角色，以及数据的处理（数据的处理好像很麻烦）
   },
   data() {
     return {
       visible: false,
-      resourcelist: ["学院办事处", "后勤处", "财务办"],
+
+      resourcelist: [{name:"学院办事处",id:'21'},{name: "后勤处",id:'23'},{name: "财务办",id:'67'}],
+
       columns,
       datas: [
         {
@@ -204,6 +208,9 @@ export default {
   margin: 0 auto;
   max-width: unset;
   height: 100%;
+
+  position: relative;
+
 }
 .addplus {
   margin: 20px;
@@ -241,5 +248,12 @@ export default {
 .delete:hover {
   cursor: pointer;
 }
+
+.admin-singnout{
+  position: absolute;
+  top:20px;
+  right:5px;
+}
+
 </style>
 

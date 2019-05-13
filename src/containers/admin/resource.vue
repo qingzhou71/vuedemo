@@ -2,6 +2,9 @@
 
   <div class="resource">
     <a-card class="resourcecard">
+
+      <signout class='admin-singnout'></signout>
+
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加资源
       </a-button>
@@ -30,6 +33,9 @@
 </template>
 
 <script>
+
+import signout from '@/components/signout'
+
 require("es6-promise").polyfill();
 require('isomorphic-fetch');
 const dataSource = [
@@ -80,7 +86,9 @@ const CollectionCreateForm = {
 };
 
 export default {
-  components: { CollectionCreateForm },
+
+  components: { CollectionCreateForm ,signout},
+
   data() {
     return {
       dataSource,
@@ -90,8 +98,9 @@ export default {
   methods: {
     confirm(e) {
       console.log(this.dataSource);
-      dataSource.splice(e,e+1);
-      console.log(e)
+
+      dataSource.splice(e,1);
+
     },
     showModal() {
       this.visible = true;
@@ -155,6 +164,9 @@ export default {
   margin: 0 auto;
   max-width: unset;
   height: 100%;
+
+  position: relative;
+
 }
 .addplus {
   margin: 20px;
@@ -178,6 +190,11 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+
+.resourcelist span:hover{
+  color: rgb(28, 28, 221);
+}
+
 .resourcelist div {
   padding: 10px;
   font-size: 17px;
@@ -186,4 +203,11 @@ export default {
   border: 1px solid rgb(196, 195, 195);
   border-radius: 4px;
 }
+
+.admin-singnout{
+  position: absolute;
+  top:20px;
+  right:5px;
+}
+
 </style>

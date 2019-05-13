@@ -1,7 +1,9 @@
 <template>
   <div class="performance">
-    
-    <div class="layout-top">学生成绩管理</div>
+    <div class="layout-top">
+      学生成绩管理
+      <!-- <signout class='per-singnout'></signout> -->
+      </div>
     <div class='centermenu'>
       <sidemenu class="sidemenu"></sidemenu>
       <a-card class='score-card'>
@@ -24,9 +26,9 @@
           
             <span>请选择学期：</span>
           <a-select defaultValue="lucy" @change="semesterChange">
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-select-option value="jack">全部</a-select-option>
+            <a-select-option value="lucy">1</a-select-option>
+            <a-select-option value="Yiminghe">2</a-select-option>
           </a-select>
           
         </a-col>
@@ -37,15 +39,20 @@
       <scorelist></scorelist>
     </a-card>
     </div>
-    <div class="layout-bottom">这里可能会有一些文字吧</div>
+    <div class="layout-bottom">@轻舟</div>
   </div>
 </template>
 
 <script>
 import sidemenu from "@/components/sidemenu";
 import scorelist from "@/components/scoreList";
+import signout from '@/components/signout'
 export default {
-  
+  // beforeCreate(){
+  //   if(localstorage.getItem('role')!=='学生'){
+  //     this.$router.push({path:'/login'});
+  //   }
+  // },
   name: "performance",
   data() {
     return {
@@ -53,7 +60,7 @@ export default {
       semester:2
     };
   },
-  components: { sidemenu ,scorelist},
+  components: { sidemenu ,scorelist,signout},
   methods: {
     addnum: function() {
       this.num++;
@@ -99,6 +106,7 @@ position: relative;
   font-weight: bolder;
   line-height: 50px;
   text-align: center;
+  position: relative;
 }
 /* .ant-card {
   margin: 10px;
@@ -117,9 +125,10 @@ position: relative;
   text-align: center;
 }
 .score-card{
-  width: 100%;
-  margin: 20px 10px;
+  width: 100% !important;
+  margin: 20px 10px !important;
   min-height: 593px;
+  max-width: unset !important;
 }
 
 .search{
@@ -138,5 +147,14 @@ position: relative;
   .score-card{
     flex: 1;
   }
+}
+.per-singnout{
+  position: absolute;
+  top:0px;
+  right:5px;
+  color: white;
+}
+.per-singnout:hover{
+  color: black;
 }
 </style>

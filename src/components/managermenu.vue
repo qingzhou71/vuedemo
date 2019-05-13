@@ -1,19 +1,16 @@
 <template>
-  <div class='adminmenu'>
-    <!-- <a-button type="primary" @click="toggleCollapsed" style="margin-bottom: 16px">
-      <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
-    </a-button> -->
+  <div class='managermenu'>
+    
     <a-menu
-      :defaultSelectedKeys="defaultSelectedKeys"
-      v-model="defaultSelectedKeys"
-      :defaultOpenKeys="['sub1']"
+      :defaultSelectedKeys="[0]"
+
       mode="inline"
       theme="dark"
       :inlineCollapsed="collapsed"
       style="height:100%"
       @select='selected'
     >
-      <a-menu-item key="1" class='menuItem'>
+      <!-- <a-menu-item key="1" class='menuItem'>
         <a-icon type="pie-chart" />
         <span>事项管理</span>
       </a-menu-item>
@@ -24,7 +21,8 @@
       <a-menu-item key="3" class='menuItem'>
         <a-icon type="inbox" />
         <span>人员管理</span>
-      </a-menu-item>
+      </a-menu-item> -->
+      <a-menu-item v-for="(item,index) in sidemenu" :key="index" class='menuItems'><a-icon type="pie-chart" />{{item}}</a-menu-item>
       
     </a-menu>
   </div>
@@ -32,32 +30,40 @@
 
 <script>
 export default {
-  props:['select'],
+  props:['select','menu'],
   data () {
     return {
       collapsed: false,
-      defaultSelectedKeys:this.select
+      defaultSelectedKeys:this.select,
+      sidemenu:this.menu
     }
   },
-  
+  beforeMount(){
+      console.log(this.defaultSelectedKeys)
+  },
   methods: {
     toggleCollapsed () {
       this.collapsed = !this.collapsed
     },
     selected({item, key, selectedKeys }){
-
-      switch(selectedKeys[0]){
-        case '1': this.$router.push({ name:'resource'}); break
-        case '2': this.$router.push({ name:'department'}); break
-        case '3': this.$router.push({ name:'managers'}); break
-
-      }
+      // console.log(item, key, selectedKeys );
+      // console.log(selectedKeys)
+    //   switch(selectedKeys[0]){
+    //     case '1': this.$router.push({ name:'resource'}); break
+    //     case '2': this.$router.push({ name:'department'}); break
+    //     case '3': this.$router.push({ name:'managers'}); break
+    //   }
+    this.$emit('test',selectedKeys[0]);
     }
   },
   watch:{
     select(){
       this.defaultSelectedKeys=this.select;
-
+     
+    },
+    menu(){
+        console.log(this.menu);
+    }
   }
 }
 </script>
@@ -67,15 +73,16 @@ export default {
 height:70px;;
 line-height: 70px;
 }
-.adminmenu{
+.managermenu{
   width: 256px;
   height:100%;
 }
-.menuItem{
+.menuItems{
   margin-bottom: 40px !important;
   font-size: 18px !important;
   margin-top: 0 !important;
   /* padding-left: 10px !important; */
+  /* text-align: center; */
 }
 .subItem{
   font-size: 16px !important;
@@ -83,7 +90,7 @@ line-height: 70px;
   padding: 0 !important;
 }
 @media screen and (max-width: 460px){
- .adminmenu{
+ .managermenu{
    width: 100px;
  }
  .ant-menu-inline > .ant-menu-item{
@@ -95,7 +102,7 @@ line-height: 50px;
  } */
 }
 @media screen and (max-width: 860px) and (min-width: 460px){
- .adminmenu{
+ .managermenu{
    width: 150px;
  }
  .ant-menu-inline > .ant-menu-item{
@@ -104,7 +111,7 @@ line-height: 60px;
 }
 }
 @media screen and (max-width: 1260px) and (min-width: 860px){
- .adminmenu{
+ .managermenu{
    width: 200px;
  }
  .ant-menu-inline > .ant-menu-item{
