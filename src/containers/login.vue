@@ -163,6 +163,7 @@ export default {
   max-width: 400px;
   background:rgb(255,255,255,0.65);
 
+
 }
 .refresh {
   font-size: 12px;
@@ -173,6 +174,7 @@ export default {
 .refresh:hover {
   color: rgb(0, 0, 255);
   cursor: pointer;
+
 }
 .login-in{
   font-size: 29px;

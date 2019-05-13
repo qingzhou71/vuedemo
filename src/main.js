@@ -22,6 +22,7 @@ Vue.use(Select);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Table);
+
 Vue.use(List);
 Vue.use(Popconfirm);
 Vue.use(Modal);
