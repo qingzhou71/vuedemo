@@ -65,7 +65,9 @@ export default {
     };
   },
 
+
   components: { sidemenu,registerProcess,xupt },
+
   beforeCreate(){
     
   },
@@ -120,6 +122,7 @@ export default {
 
   width: 100% !important;
   margin: 0 !important;
+
   max-width: unset !important;
 
 

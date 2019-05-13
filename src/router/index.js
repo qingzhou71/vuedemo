@@ -4,18 +4,22 @@ import Promise from 'promise-polyfill'
 import login from '@/containers/login'
 import register from '@/containers/register'
 import performance from '@/containers/performance'
+
 import introduction from '@/containers/introduction'
 import center from '@/containers/center'
+
 import admin from '@/containers/user/admin'
 import resource from '@/containers/admin/resource'
 import department from '@/containers/admin/department'
 import managers from '@/containers/admin/managers'
+
 import manager from '@/containers/user/manager'
 import info from '@/containers/user/info'
 
 
 if (!window.Promise) {
   window.Promise = Promise;
+
 }
 
 Vue.use(Router)
@@ -29,9 +33,11 @@ export default new Router({
     { path: '/performance', name: 'performance', component: performance},
     { path: '/introduction', name: 'introduction', component: introduction},
     {
+
       path: '/center',
       name: 'center',
       component: center
+
     },
     {
       path: '/managers',
@@ -39,6 +45,7 @@ export default new Router({
       component: manager,
     },
     {
+
       path: '/admin',
       name: 'admin',
       component: admin,
@@ -87,6 +94,7 @@ export default new Router({
         //     }
         //   ]
         // }
+
       ]
     }
   ]

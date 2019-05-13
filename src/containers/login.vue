@@ -1,8 +1,10 @@
 <template>
   <div class="hello">
     <router-link to="/register">to test</router-link>
+
     <a-card class='login'>
       <div class='login-in'>登录</div>
+
       <a-form
         id="components-form-demo-normal-login"
         :form="form"
@@ -12,11 +14,13 @@
         <a-form-item class="login-form-item">
           <a-input
             v-decorator="[
+
           'username',
           { rules: [{ required: true, message: '你还没有输入账号!' }] }
         ]"
             placeholder="请输入账号"
             size='large'
+
           >
             <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
           </a-input>
@@ -29,7 +33,9 @@
         ]"
             type="password"
             placeholder="请输入密码"
+
             size='large'
+
           >
             <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
           </a-input>
@@ -43,10 +49,12 @@
           { rules: [{ required: true, message: '请输入验证码!' }] }
         ]"
               placeholder="请输入验证码"
+
               size='large'
             />
             <img :src="src" style="width:100px;margin-right:5px" title="看不清，换一张" @click="refresh">
             <!-- <div class="refresh" @click="refresh">换一张</div> -->
+
           </div>
         </a-form-item>
 
@@ -61,7 +69,9 @@
         ]"
           >记住我</a-checkbox>
           <a class="login-form-forgot" href>忘记密码</a>
+
           <a-button type="primary" html-type="submit" class="login-form-button" size='large'>登录</a-button>
+
         </a-form-item>
       </a-form>
     </a-card>
@@ -80,8 +90,10 @@ export default {
     return {
       msg: "Welcome to Your Vue.js App",
       test: "i will",
+
       src: "http://demo.nat200.top/code/image",
       infosure:localStorage.getItem('info')
+
     };
   },
   methods: {
@@ -90,6 +102,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values); // 拿到values，通过Ajax来调用接口，传参values
+
         //   fetch(`http://demo.nat200.top/authentication/form?username=${values.username}&password=${values.password}`, {
         //     method: "POST",
         //      headers:{'Access-Control-Allow-Origin':'*'},
@@ -119,6 +132,7 @@ export default {
           else{
             this.$router.push({ path: "/info" });
           }
+
         }
       });
     },
@@ -132,11 +146,13 @@ export default {
 <style>
 .hello {
   width: 100%;
+
   height:100%;
   background-image:url('../assets/3.jpg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   
+
 }
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
@@ -153,9 +169,11 @@ export default {
 }
 #components-form-demo-normal-login .login-form-button {
   width: 100%;
+
   margin-top: 30px;
 }
 .login{
+
   border: none;
   width: 80%;
   height: 500px;
@@ -163,6 +181,18 @@ export default {
   max-width: 400px;
   background:rgb(255,255,255,0.65);
 
+
+
+}
+.refresh {
+  font-size: 12px;
+  line-height: 10px;
+  height: 10px;
+  margin-top: 30px;
+}
+.refresh:hover {
+  color: blue;
+  cursor: pointer;
 
 }
 .refresh {
