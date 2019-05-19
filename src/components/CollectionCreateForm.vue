@@ -48,6 +48,18 @@ export default {
   beforeCreate () {
     this.form = this.$form.createForm(this);
     // console.log(this.name);
+
+    fetch(`/api/campus`, {
+    method: "GET"
+  })
+    .then(res => {
+      return res.json();
+    })
+    .then(res => {
+      console.log(res.content);
+      this.resourcelist = res.content;
+    });
+
   },
   created(){
       console.log(this.name);

@@ -1,15 +1,45 @@
 <template>
-  <div class="process">
-    {{msgs}}
+
+  <div class="process" :style='processstyle'>
+    <span style='display:none'>{{msgs}}
     {{lat}}
-    {{count}}
+    {{count}}</span>
+     
+          路程导航贴心奉上：
+    <div class='registmap'>
+      
     <div id="container"></div>
     <div id="panel"></div>
+    </div>
+   
+   <div class='registtext'>
+       <span>当前流程:</span>
+    <a-steps size='small'  :current="1" labelPlacement='vertical'>
+            <a-step v-for='(items,index) in campusdata.process' :key='index' :title="items.name" />
+          </a-steps>
+          <div class='reforsure'>
+          <a-button type='primary' >完成注册</a-button>
+          </div>
+          </div>
+
   </div>
 </template>
 
 
 <script >
+
+const campusdata = 
+  {
+    campusid: "10",
+    campusname: "通信与信息工程学院",
+    process: [
+      { sep: 1, name: "学院办事处", key: 0 },
+      { sep: 2, name: "图书馆", key: 1 },
+      { sep: 3, name: "宿舍管理处", key: 2 },
+    ]
+  };
+  
+
 export default {
   name: "process",
   props: ["msg"],
@@ -19,7 +49,13 @@ export default {
       lat:1,
       lng:2,
       timer:'',
-      count:0
+
+      count:0,
+      campusdata,
+      processstyle:{
+        height:window.screen.availHeight-146+'px'
+      }
+
     };
   },
   methods: {
@@ -27,6 +63,9 @@ export default {
       var _that=this;   //存储this的值，防止实例化内部拿不到需要的this
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
+        center:[108.9,34.15],
+
         zoom: 13 
       });
       AMap.plugin("AMap.Geolocation", function() {
@@ -49,6 +88,9 @@ export default {
     navi(lat,lng,count){
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
+        center:[lng,lat],
+
         zoom: 13 //初始视窗
       });
       var walking = new AMap.Walking({
@@ -56,7 +98,9 @@ export default {
         panel: "panel"
     }); 
     //根据起终点坐标规划步行路线
-    walking.search([lng, lat], [108.899, 34.15], function(status, result) {
+
+    walking.search([108.8991665840,34.1499923318,108.8991665840], [108.9008617401,34.153126515], function(status, result) {
+
         if (status === 'complete') {
             log.success('绘制步行路线完成')
         } else {
@@ -78,7 +122,17 @@ export default {
   },
   mounted() {
      this.maps();
-     this.timer=setInterval(this.maps,10000);
+
+    //  document.documentElement.scrollTop=145;
+    //  console.log(document.documentElement.scrollTop);
+    console.log(document.documentElement.clientHeight);
+    //  setTimeout(()=>{
+    //   //  document.documentElement.scrollTop=100;
+    //    console.log( document.documentElement.scrollTop)
+    //    console.log('12345')
+    //  },0);
+    //  this.timer=setInterval(this.maps,10000);
+
   },
   // beforeUpdate(){
   //   // this.navi();
@@ -88,36 +142,85 @@ export default {
 </script>
 <style>
 .process {
-  height: 575px;
-  position: relative;
+
+  /* height: 775px; */
+  
+  /* position: relative; */
+  
+
+}
+.registmap{
+/* display: flex; */
+height:70%;
+max-height: 500px;
+position: relative;
+margin-top: 15px;
 }
 #container {
-  height: 80%;
-  width: 70%;
+  height: 90%;
+  width: 100%;
+   position: relative;
+
 }
 #panel {
   
   position: absolute;
   background-color: white;
   max-height: 90%;
-  overflow-y: hidden;
-  top: 10px;
-  right: 10px;
-  width: 280px;
+
+  overflow-y: scroll;
+  top: 0px;
+  right: 0px;
+  width: 100px;
+  height: 40%;
+  font-size: 12px;
 }
-#panel .amap-call:nth-child(1) {
+#panel .amap-call {
   
   background-color: #009cf9 !important;
+  
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+  
 }
-#panel .amap-call:not(#panel .amap-call:nth-child(1)){
-  display: none;
-}
-#panel .amap-lib-walking:nth-child(1) {
+
+#panel .amap-lib-walking {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   overflow: hidden;
+  /* display: none; */
+}
+.process .amap-lib-walking .planTitle{
+  padding: 0 !important;
+}
+.process .amap-lib-walking .plan dt{
+  line-height: unset !important
+}
+.process .ant-steps-item{
+  width: 20%;
+}
+.process .ant-steps-label-vertical .ant-steps-item-tail{
+  margin-left: 20px !important;
+}
+.process .ant-steps-label-vertical .ant-steps-item-icon{
+  margin-left: 10px !important;
+}
+.process .ant-steps-label-vertical .ant-steps-item-content{
+  margin-left: -30px !important;
+  font-size: 10px;
+  margin-top: 2px;
+}
+.reforsure{
+  text-align: center;
+  margin-top: 15px;
+}
+.reforsure .ant-btn-primary{
+  width:60%;
+  max-width: 300px;
+}
+.registtext{
+  height: 30%;
+
 }
 </style>
 

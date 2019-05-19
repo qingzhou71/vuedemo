@@ -76,13 +76,15 @@ export default {
        this.datas=this.recorddata;
       //  console.log(this.datas.name);
           this.defaultname=this.recorddata.name;
-          console.log(this.defaultname,678);
+
+          // console.log(this.defaultname,678);
           
     },
     editindex(){
-      console.log(this.editindex);
+      // console.log(this.editindex);
       this.index=this.editindex;
-      console.log(this.editindex);
+      // console.log(this.editindex);
+
     }
   }
 }

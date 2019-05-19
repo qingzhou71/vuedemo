@@ -2,7 +2,7 @@
   <div class="managers">
     <a-card class="managerscard">
 
-      <signout class='admin-singnout'></signout>
+      <signout class="admin-singnout"></signout>
 
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加管理员
@@ -17,11 +17,12 @@
       />
       <h1>管理员列表：</h1>
       <div class="listboard">
-        <a-table :columns="columns" :dataSource="datas" bordered>
+        <a-table :columns="columns" :dataSource="dataSource" bordered>
+          
           <template slot="del" slot-scope="text, record">
             <a-popconfirm
               title="确定要删除此人员么？"
-              v-if="datas.length"
+              v-if="dataSource.length"
               okText="确认"
               cancelText="取消"
               @confirm="() => confirm(record.key)"
@@ -30,39 +31,43 @@
             </a-popconfirm>
           </template>
         </a-table>
+        <!-- <table>
+          <tr>
+            <th v-for='(item,index) in columns' :key='index'>{{item.title}}</th>
+          </tr>
+        </table> -->
       </div>
     </a-card>
   </div>
 </template>
 <script>
 
-import signout from '@/components/signout'
-
+import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
-const columns = [
-  {
-    title: "用户名",
-    dataIndex: "name"
-  },
-  {
-    title: "账号",
-    dataIndex: "username"
-  },
-  {
-    title: "密码",
-    dataIndex: "password"
-  },
-  {
-    title: "所属部门",
-    dataIndex: "department"
-  },
-  {
-    title: "操作",
-    dataIndex: "del",
-    scopedSlots: { customRender: "del" }
-  }
-];
+// const columns = [
+//   {
+//     title: "用户名",
+//     dataIndex: "name"
+//   },
+//   {
+//     title: "账号",
+//     dataIndex: "username"
+//   },
+//   {
+//     title: "密码",
+//     dataIndex: "password"
+//   },
+//   {
+//     title: "所属部门",
+//     dataIndex: "department"
+//   },
+//   {
+//     title: "操作",
+//     dataIndex: "del",
+//     scopedSlots: { customRender: "del" }
+//   }
+// ];
 
 const CollectionCreateForm = {
   props: ["visible", "resourcelist"],
@@ -138,29 +143,110 @@ const CollectionCreateForm = {
 
 export default {
 
-  components: { CollectionCreateForm ,signout},
-
-  beforeCreate() {
-    // get请求进行数据的初始化，资源，角色，以及数据的处理（数据的处理好像很麻烦）
-  },
-  data() {
+  components: { CollectionCreateForm, signout },
+   data() {
     return {
       visible: false,
+      resourcelist: [
+        { name: "学院办事处", id: "21" },
+        { name: "后勤处", id: "23" },
+        { name: "财务办", id: "67" }
+      ],
+      columns:[
+  {
+    title: "用户名",
+    dataIndex: "name"
+  },
+  {
+    title: "账号",
+    dataIndex: "username"
+  },
+  {
+    title: "密码",
+    dataIndex: "password"
+  },
+  {
+    title: "所属部门",
+    dataIndex: "department"
+  },
+  {
+    title: "操作",
+    dataIndex: "del",
+    scopedSlots: { customRender: "del" }
+  }
+],
+      dataSource:[{
+        password:'1234',
+        username:'23',
+        key:'1',
+        department:'123',
+        id:'1234'
+      }],
+      currentde:[]
 
-      resourcelist: [{name:"学院办事处",id:'21'},{name: "后勤处",id:'23'},{name: "财务办",id:'67'}],
-
-      columns,
-      datas: [
-        {
-          key: "1",
-          name: "测试一",
-          username: "123344",
-          password: "6778888",
-          department: "后勤处"
-        }
-      ]
     };
   },
+  beforeCreate() {
+    fetch(`/api/admin/role`,{
+      method:'GET'
+    }).then(res=>{
+      return res.json()
+    }).then(res=>{
+      // console.log(res);
+      this.resourcelist=res;
+    })
+
+    fetch(`/api/admin`, {
+      method: "GET"
+    })
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return;
+        }
+      })
+      .then(res => {
+      //  this.dataSource=res.content;
+      console.log(res);
+      // this.dataSource=res.content;
+      const datalist=[];
+       res.content.map((item,index) => {
+          datalist[index]=item;
+          datalist[index].key=index;
+          const roleid=item.roleIds[0];
+          this.currentde=[];
+          // var test='';
+         fetch(`/api/admin/role/${roleid}`, {
+            method: "GET"
+          }).then(res => {
+            if (res.status === 200) {
+              return res.json();
+            } else {
+              return;
+            }
+          }).then(res=>{
+          // datalist[index].department=res.name;
+           console.log(res)
+          //  console.log(this);
+           this.currentde=res;
+           datalist[index].depart=this.currentde.name;
+           this.dataSource=datalist;
+           
+           console.log(this.dataSource);
+          })
+
+          
+        });
+        // console.log(datalist);
+        // this.dataSource=datalist;
+        // console.log(this.dataSource)
+
+        
+      });
+     
+  },
+ 
   methods: {
     confirm(key) {
       // 删除操作，在这里发起del请求和get请求来刷新列表
@@ -169,6 +255,7 @@ export default {
 
     showModal() {
       this.visible = true;
+      console.log(this.dataSource)
     },
     handleCreate() {
       // 添加操作，在这里发起post请求和get请求获取数据刷新列表，重点是对数据的处理
@@ -241,6 +328,8 @@ export default {
 .listboard {
   border: 1px solid rgb(196, 195, 195);
   border-radius: 4px;
+  height: 72%;
+  overflow-y: scroll;
 }
 .delete {
   color: blue;
@@ -249,10 +338,11 @@ export default {
   cursor: pointer;
 }
 
-.admin-singnout{
+.admin-singnout {
   position: absolute;
-  top:20px;
-  right:5px;
+  top: 20px;
+  right: 5px;
+
 }
 
 </style>

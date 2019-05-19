@@ -18,39 +18,45 @@
       <div v-if="list" class="listboard">
         <div v-for="(item,index) in dataSource" :key="item.name" class="resourcelist">
           <h2>{{item.name}}</h2>
-          <a-popconfirm :title="deltitle" okText="确认" cancelText="取消" @confirm="confirm(index)">
+
+          <a-popconfirm :title="deltitle" okText="确认" cancelText="取消" @confirm="confirm(item.id)">
+
             <span class="deleted">
               <a-icon type="delete"/>
             </span>
           </a-popconfirm>
           <span class="edit">
-            <a-icon type="edit" @click="showedit(index)"/>
+
+            <a-icon type="edit" @click="showedit(index,item.id)"/>
           </span>
           <editform
-          ref="editForm"
-        :visible="editvisible"
-        :recorddata="currentdata"
-        :name='department'
-        :editindex='editindex'
-        @cancel="handleCancel"
-        @create="handleEdit"
+            ref="editForm"
+            :visible="editvisible"
+            :recorddata="currentdata"
+            :name="department"
+            :editindex="editindex"
+            @cancel="handleCancel"
+            @create="handleEdit"
           />
-          <div>{{item.mark}}</div>
+          <!-- <div>{{item.campus.name}}</div> -->
+
         </div>
       </div>
 
       <div v-else class="listboard">
         <a-table :columns="columns" :dataSource="datas" bordered>
-          <template slot="del" slot-scope="text, record" class='todo'>
-              <a class='edits' @click="showedittable(record.key)"> 修改   </a> 
-              <editform
-        :visible="editvisible"
-        :recorddata="currentdata"
-        :name='department'
-        :editindex='editindex'
-        @cancel="handleCancel"
-        @create="handleEdit"
-          />
+
+          <template slot="del" slot-scope="text, record" class="todo">
+            <a class="edits" @click="showedittable(record.key)">修改</a>
+            <editform
+              :visible="editvisible"
+              :recorddata="currentdata"
+              :name="department"
+              :editindex="editindex"
+              @cancel="handleCancel"
+              @create="handleEdit"
+            />
+
             <a-popconfirm
               :title="deltitle"
               v-if="datas.length"
@@ -59,9 +65,9 @@
               @confirm="() => confirmtable(record.key)"
             >
               <a class="delete">删除</a>
-              
+
             </a-popconfirm>
-            
+
           </template>
         </a-table>
       </div>
@@ -72,32 +78,33 @@
 <script>
 import CollectionCreateForm from "@/components/CollectionCreateForm";
 import editform from "@/components/editform";
-import { addcampus, addmajor,editcampus,editmajor } from "@/components/api.js";
+
+import *as sever from "@/components/api.js";
+
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 const dataSource = [
   {
-    name: "通信与信息工程学院",
-    
+    name: "通信与信息工程学院"
   },
   {
-    name: "电子工程学院",
+    name: "电子工程学院"
   },
   {
-    name: "自动化学院",
+    name: "自动化学院"
   },
   {
-    name: "人文社科学院",
+    name: "人文社科学院"
   },
   {
-    name: "计算机学院",
+    name: "计算机学院"
   },
   {
-    name: "马克思主义学院",
+    name: "马克思主义学院"
   },
   {
-    name: "经济与管理学院",
+    name: "经济与管理学院"
   }
 ]; // 应该为初始化之前get的列表
 const majorcolumns = [
@@ -145,10 +152,16 @@ export default {
   beforeCreate() {
     // console.log(this.department)
     this.form = this.$form.createForm(this);
+
+    
+    // sever.getcampus(this);
+    // sever.getmajor(this);
+    sever.getdorm(this);
   },
   beforeMount() {
     // console.log(this.department)
-    if (this.department === "学院" || this.department === "宿舍") {
+    if (this.department === "学院" || this.department === "专业"||this.department==='宿舍') {
+
       this.list = true;
     } else {
       this.list = false;
@@ -162,9 +175,12 @@ export default {
       deltitle: "确认删除此" + this.department + "吗？",
       list: true,
       visible: false,
-      editvisible:false,
-     currentdata:{name:'123',mark:'765'},
-     editindex:0,
+
+      editvisible: false,
+      currentdata: { name: "123", mark: "765" },
+      currentids:0,
+      editindex: 0,
+
       columns: this.department === "专业" ? majorcolumns : locationcolumns,
       datas: [
         {
@@ -184,9 +200,16 @@ export default {
   },
   methods: {
     confirm(e) {
-      console.log(this.dataSource[e]);
-      dataSource.splice(e, 1);
+
+      
+      console.log(e);
+      
+      // sever.delcampus(e,this);
+      // sever.delmajor(e,this);
+      sever.deldorm(e,this);
     },
+    
+
     confirmtable(key) {
       // 删除操作，在这里发起del请求和get请求来刷新列表
 
@@ -199,94 +222,80 @@ export default {
     showModal() {
       this.visible = true;
     },
-    showedit(index){
-        this.editvisible=true;
-        // console.log(index);
-         this.currentdata=this.dataSource[index];
-        //  console.log(this.currentdata);
-         this.editindex=index;
-        //  console.log(this.index);
+
+    showedit(index,id) {
+      this.editvisible = true;
+      // console.log(index);
+      // this.currentdata = this.dataSource[index];
+      //  console.log(this.currentdata);
+      this.editindex = index;
+      //  console.log(this.index);
+      this.currentids=id;
     },
-    showedittable(key){
-        
-        this.editvisible=true;
-        this.currentdata=this.datas.filter(item => item.key == key)[0];
-        console.log(this.currentdata);
-         this.editindex=key;
+    showedittable(key) {
+      this.editvisible = true;
+      this.currentdata = this.datas.filter(item => item.key == key)[0];
+      console.log(this.currentdata);
+      this.editindex = key;
     },
-    
+
     handleCreate() {
       console.log(this.$refs);
-      console.log(this.$refs.collectionForm.form)
-      if(this.department==='学院'){
-          addcampus(this.$refs,dataSource,this);
-      }else{
-          addmajor(this.$refs, this);
+      console.log(this.$refs.collectionForm.form);
+      if (this.department === "学院") {
+        sever.addcampus(this.$refs, dataSource, this);
+      } else {
+      //  sever. addmajor(this.$refs, this);
+      sever.adddorm(this.$refs,this);
       }
-        // addcampus(this.$refs,dataSource,this);
-    //  addmajor(this.$refs, this);
-      //   const form = this.$refs.collectionForm.form;
-      //   form.validateFields((err, values) => {
-      //     if (err) {
-      //       return;
-      //     }
-      //     console.log('Received values of form: ', values);
-      //     dataSource.push(values);
-      //     form.resetFields();
-      //     this.visible = false;
-      //   });
-      //   fetch(`http://demo.nat200.top/admin/resource`,{
-      //       method:'POST',
-      //       body:{
-      //           "name":"123333"
-      //       }
-      //   }).then(res=>{
-      //       console.log(res);
-      //       return res.json();
-      //   }).then(data=>{
-      //       console.log(data,'5432');
-      //   })
-      fetch(`http://demo.nat200.top/admin/resource`,{
-            method:'GET',
 
-        }).then(res=>{
-            console.log(res);
-            return res.json();
-        }).then(data=>{
-            console.log(data,'5432');
-        })
     },
     handleCancel(e) {
       console.log("Clicked cancel button");
       this.visible = false;
-      this.editvisible=false;
+
+      this.editvisible = false;
     },
-    handleEdit(e){
-        // if(this.department==='学院'){
-        //     editcampus(this.$refs,dataSource,e,this)
-        // }else{
-        //     editmajor(this.$refs,e,this);
-        // }
-        // editcampus(this.$refs,dataSource,e,this)
-        //  editmajor(this.$refs,e,this);
-         console.log(this.$refs);
-         console.log(e);
-         const form = this.$refs.editForm[e].form;
-       
-        form.validateFields((err, values) => {
+    handleEdit(e) {
+      // if(this.department==='学院'){
+      //     editcampus(this.$refs,dataSource,e,this)
+      // }else{
+      //     editmajor(this.$refs,e,this);
+      // }
+      // editcampus(this.$refs,dataSource,e,this)
+      //  editmajor(this.$refs,e,this);
+      console.log(this.$refs);
+      console.log(e);
+      console.log(this.editindex);
+      const form = this.$refs.editForm[e].form;
+      console.log(this.$refs.editForm[e]);
+      form.validateFields((err, values) => {
         if (err) {
           return;
         }
-        console.log('Received values of form: ', values);
-        dataSource.map((item,index)=>{
-            if(index===e){
-                console.log(item);
-                item.name=values.name;
-            }
+        console.log("Received values of form: ", values);
+        fetch(`/api//admin/education/campus`,{
+          method:'PUT',
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            name: values.name,
+            id:this.currentids
+          })
+        }).then(res=>{
+          return res.json()
+        }).then(res=>{
+          console.log(res);
         })
-        this.editvisible=false;
+        
+        this.editvisible = false;
         console.log(dataSource);
-        });
+      });
+      form.resetFields();
+
     }
   }
 };
@@ -305,6 +314,11 @@ export default {
   overflow: auto;
   padding: 0 20px;
 }
+
+.operationcard .ant-card-body {
+  height: 100%;
+}
+
 .addplus {
   margin: 20px;
   width: 200px;
@@ -331,7 +345,9 @@ export default {
 .edit {
   position: absolute;
   top: 10px;
-  right: 50px;
+
+  right: 50px !important;
+
   font-size: 18px;
   cursor: pointer;
 }
@@ -350,7 +366,10 @@ export default {
   border-radius: 4px;
   padding: 0 20px;
   margin: 0 20px;
-  /* overflow: hidden; */
+
+  height: 72%;
+  overflow-y: scroll;
+
 }
 .manager-singnout {
   position: absolute;
@@ -365,10 +384,12 @@ export default {
     top:10px;
     right: 10px;
 } */
-.delete:hover{
-    color: red;
+
+.delete:hover {
+  color: red;
 }
-.edits:hover{
-    color:red;
+.edits:hover {
+  color: red;
+
 }
 </style>
