@@ -28,8 +28,8 @@ export default {
   data(){
     return{
       SelectedKeys:[0],
-      department:'学院',
-      menu:['流程管理'], // menu是资源得获取，在data初始化前
+      department:'建筑',
+      menu:['业务管理','注册管理'], // menu是资源得获取，在data初始化前
       operationselect:true,
       reselect:false,
       menushow:true

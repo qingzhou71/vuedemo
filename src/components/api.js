@@ -1,5 +1,30 @@
 import { parseComponent } from "vue-template-compiler";
 
+
+export function getcampus(that){
+  fetch(`/api/campus`, {
+    method: "GET"
+  })
+    .then(res => {
+      return res.json();
+    })
+    .then(res => {
+      console.log(res.content);
+      that.dataSource = res.content;
+    });
+}
+
+export function delcampus(e,that){
+  fetch(`/api/admin/education/campus/${e}`,{
+    method:'DELETE'
+  }).then(res=>{
+    if(res.status===200){
+      getcampus(that);
+    }
+    return
+  })
+}
+
 export function addcampus(refs,dataSource,that){
     const form = refs.collectionForm.form;  // 创建form
       form.validateFields((err, values) => {
@@ -7,72 +32,85 @@ export function addcampus(refs,dataSource,that){
           return;
         }
         console.log('Received values of form: ', values);
-        dataSource.push(values);  // 应该是fetch到的新数据 先以values为参数post请求，在请求成功后get新的数据
-        fetch(`http://demo.nat200.top/admin/campus`,{
+        // dataSource.push(values);  // 应该是fetch到的新数据 先以values为参数post请求，在请求成功后get新的数据
+        fetch(`/api/admin/education/campus?name=${values.name}`,{
             method:'POST',
-            body:{
-              'name':values.name
-            }
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "content-type": "application/json"
+            },
+            credentials: "include",
+            
         }).then(res=>{
             return res.json();
         }).then(data=>{
-          fetch(`http://demo.nat200.top/admin/campus`,{
-            method:'GET',
-
-        }).then(res=>{
-            return res.json();
-        }).then(data=>{
-            dataSource=data;
-        })
+          getcampus(that);
     }),
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });
 }
 
+
+export function getmajor(that){
+  fetch(`/api/major`, {
+    method: "GET"
+  })
+    .then(res => {
+      return res.json();
+    })
+    .then(res => {
+      console.log(res.content);
+      that.dataSource = res.content;
+    });
+}
+
+
 export function addmajor(refs,that){
     const form = refs.collectionForm.form;  // 创建form
-    console.log(form,123456);
-    const params = {};
       form.validateFields((err, values) => {
         if (err) {
           return;
         }
         console.log('Received values of form: ', values);
       //  dataSource.push(values);  // 应该是fetch到的新数据
-       params.name = values.name;
-        // params.createdTime=values.createdTime;
-        params.campus = values.campus;
-        params.key = values.name;
-        console.log(params);
-        that.datas.push(params);
-        fetch(`http://demo.nat200.top/admin/major`,{
-            method:'POST',
-            body:{
-              'name':values.name,
-              'campus':values.campus,
-            }
-        }).then(res=>{
-            return res.json();
-        }).then(data=>{
-          fetch(`http://demo.nat200.top/admin/major`,{
-            method:'GET',
-
-        }).then(res=>{
-            return res.json();
-        }).then(data=>{
-            dataSource=data.map((item,index)=>{
-              dataSource[index].name=item.name;
-              dataSource[index].campus=item.campus;
-              dataSource[index].createdTime=item.createdTime;
-              dataSource[index].key=index;
-            });
+       fetch(`/api/admin/education/major`,{
+         method:'POST',
+         headers: {
+          "Access-Control-Allow-Origin": "*",
+          "content-type": "application/json"
+        },
+        credentials: "include",
+        body:JSON.stringify({
+          name:values.name,
+          campus:{
+            id:values.campus,
+            name:'any'
+          }
         })
-    }),
+
+       }).then(res=>{
+         return res.json()
+       }).then(res=>{
+         getmajor(that);
+       })
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });
 }
+
+export function delmajor(e,that){
+  fetch(`/api/admin/education/major/${e}`,{
+    method:'DELETE'
+  }).then(res=>{
+    if(res.status===200){
+      getmajor(that);
+    }
+    return
+  })
+}
+
+
 export function editcampus(refs,dataSource,e,that){
     
     const form = refs.editForm[e].form;
@@ -118,4 +156,57 @@ export function editmajor(refs,e,that){
         that.editvisible=false;
         console.log(that.datas);
         });
+}
+
+
+export function getdorm(that){
+  fetch(`/api/dorm`,{
+    method:'GET'
+  }).then(res=>{
+    return res.json()
+  }).then(res=>{
+    
+    that.dataSource=res.content;
+    console.log(that.dataSource);
+  })
+}
+
+export function adddorm(refs,that){
+  const form = refs.collectionForm.form;  // 创建form
+  form.validateFields((err, values) => {
+    if (err) {
+      return;
+    }
+    console.log('Received values of form: ', values);
+    fetch(`/api/admin/facility/dormitory`,{
+        method:'POST',
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "content-type": "application/json"
+        },
+        credentials: "include",
+        body:JSON.stringify({
+          name:values.name,
+          
+        })
+        
+    }).then(res=>{
+        return res.json();
+    }).then(data=>{
+      getdorm(that);
+}),
+    form.resetFields();
+    that.visible = false; //   控制对话框的状态
+  });
+}
+
+export function deldorm(e,that){
+  fetch(`/api/admin/facility/dormitory/${e}`,{
+    method:'DELETE'
+  }).then(res=>{
+    if(res.status===200){
+      getdorm(that);
+    }
+    return
+  })
 }
