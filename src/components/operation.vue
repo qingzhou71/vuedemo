@@ -18,12 +18,15 @@
       <div v-if="list" class="listboard">
         <div v-for="(item,index) in dataSource" :key="item.name" class="resourcelist">
           <h2>{{item.name}}</h2>
+
           <a-popconfirm :title="deltitle" okText="确认" cancelText="取消" @confirm="confirm(item.id)">
+
             <span class="deleted">
               <a-icon type="delete"/>
             </span>
           </a-popconfirm>
           <span class="edit">
+
             <a-icon type="edit" @click="showedit(index,item.id)"/>
           </span>
           <editform
@@ -36,11 +39,13 @@
             @create="handleEdit"
           />
           <!-- <div>{{item.campus.name}}</div> -->
+
         </div>
       </div>
 
       <div v-else class="listboard">
         <a-table :columns="columns" :dataSource="datas" bordered>
+
           <template slot="del" slot-scope="text, record" class="todo">
             <a class="edits" @click="showedittable(record.key)">修改</a>
             <editform
@@ -51,6 +56,7 @@
               @cancel="handleCancel"
               @create="handleEdit"
             />
+
             <a-popconfirm
               :title="deltitle"
               v-if="datas.length"
@@ -59,7 +65,9 @@
               @confirm="() => confirmtable(record.key)"
             >
               <a class="delete">删除</a>
+
             </a-popconfirm>
+
           </template>
         </a-table>
       </div>
@@ -70,7 +78,9 @@
 <script>
 import CollectionCreateForm from "@/components/CollectionCreateForm";
 import editform from "@/components/editform";
+
 import *as sever from "@/components/api.js";
+
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
@@ -142,6 +152,7 @@ export default {
   beforeCreate() {
     // console.log(this.department)
     this.form = this.$form.createForm(this);
+
     
     // sever.getcampus(this);
     // sever.getmajor(this);
@@ -150,6 +161,7 @@ export default {
   beforeMount() {
     // console.log(this.department)
     if (this.department === "学院" || this.department === "专业"||this.department==='宿舍') {
+
       this.list = true;
     } else {
       this.list = false;
@@ -163,10 +175,12 @@ export default {
       deltitle: "确认删除此" + this.department + "吗？",
       list: true,
       visible: false,
+
       editvisible: false,
       currentdata: { name: "123", mark: "765" },
       currentids:0,
       editindex: 0,
+
       columns: this.department === "专业" ? majorcolumns : locationcolumns,
       datas: [
         {
@@ -186,6 +200,7 @@ export default {
   },
   methods: {
     confirm(e) {
+
       
       console.log(e);
       
@@ -194,6 +209,7 @@ export default {
       sever.deldorm(e,this);
     },
     
+
     confirmtable(key) {
       // 删除操作，在这里发起del请求和get请求来刷新列表
 
@@ -206,6 +222,7 @@ export default {
     showModal() {
       this.visible = true;
     },
+
     showedit(index,id) {
       this.editvisible = true;
       // console.log(index);
@@ -231,10 +248,12 @@ export default {
       //  sever. addmajor(this.$refs, this);
       sever.adddorm(this.$refs,this);
       }
+
     },
     handleCancel(e) {
       console.log("Clicked cancel button");
       this.visible = false;
+
       this.editvisible = false;
     },
     handleEdit(e) {
@@ -276,6 +295,7 @@ export default {
         console.log(dataSource);
       });
       form.resetFields();
+
     }
   }
 };
@@ -294,9 +314,11 @@ export default {
   overflow: auto;
   padding: 0 20px;
 }
+
 .operationcard .ant-card-body {
   height: 100%;
 }
+
 .addplus {
   margin: 20px;
   width: 200px;
@@ -323,7 +345,9 @@ export default {
 .edit {
   position: absolute;
   top: 10px;
+
   right: 50px !important;
+
   font-size: 18px;
   cursor: pointer;
 }
@@ -342,8 +366,10 @@ export default {
   border-radius: 4px;
   padding: 0 20px;
   margin: 0 20px;
+
   height: 72%;
   overflow-y: scroll;
+
 }
 .manager-singnout {
   position: absolute;
@@ -358,10 +384,12 @@ export default {
     top:10px;
     right: 10px;
 } */
+
 .delete:hover {
   color: red;
 }
 .edits:hover {
   color: red;
+
 }
 </style>

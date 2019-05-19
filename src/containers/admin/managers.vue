@@ -1,7 +1,9 @@
 <template>
   <div class="managers">
     <a-card class="managerscard">
+
       <signout class="admin-singnout"></signout>
+
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加管理员
       </a-button>
@@ -39,6 +41,7 @@
   </div>
 </template>
 <script>
+
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
@@ -65,6 +68,7 @@ require("isomorphic-fetch");
 //     scopedSlots: { customRender: "del" }
 //   }
 // ];
+
 const CollectionCreateForm = {
   props: ["visible", "resourcelist"],
   beforeCreate() {
@@ -138,6 +142,7 @@ const CollectionCreateForm = {
 };
 
 export default {
+
   components: { CollectionCreateForm, signout },
    data() {
     return {
@@ -178,6 +183,7 @@ export default {
         id:'1234'
       }],
       currentde:[]
+
     };
   },
   beforeCreate() {
@@ -331,10 +337,12 @@ export default {
 .delete:hover {
   cursor: pointer;
 }
+
 .admin-singnout {
   position: absolute;
   top: 20px;
   right: 5px;
+
 }
 
 </style>

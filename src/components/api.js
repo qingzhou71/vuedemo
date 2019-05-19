@@ -1,6 +1,7 @@
 import { parseComponent } from "vue-template-compiler";
 
 
+
 export function getcampus(that){
   fetch(`/api/campus`, {
     method: "GET"
@@ -25,6 +26,7 @@ export function delcampus(e,that){
   })
 }
 
+
 export function addcampus(refs,dataSource,that){
     const form = refs.collectionForm.form;  // 创建form
       form.validateFields((err, values) => {
@@ -32,6 +34,7 @@ export function addcampus(refs,dataSource,that){
           return;
         }
         console.log('Received values of form: ', values);
+
         // dataSource.push(values);  // 应该是fetch到的新数据 先以values为参数post请求，在请求成功后get新的数据
         fetch(`/api/admin/education/campus?name=${values.name}`,{
             method:'POST',
@@ -45,11 +48,13 @@ export function addcampus(refs,dataSource,that){
             return res.json();
         }).then(data=>{
           getcampus(that);
+
     }),
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });
 }
+
 
 
 export function getmajor(that){
@@ -68,12 +73,14 @@ export function getmajor(that){
 
 export function addmajor(refs,that){
     const form = refs.collectionForm.form;  // 创建form
+
       form.validateFields((err, values) => {
         if (err) {
           return;
         }
         console.log('Received values of form: ', values);
       //  dataSource.push(values);  // 应该是fetch到的新数据
+
        fetch(`/api/admin/education/major`,{
          method:'POST',
          headers: {
@@ -94,10 +101,12 @@ export function addmajor(refs,that){
        }).then(res=>{
          getmajor(that);
        })
+
         form.resetFields();
         that.visible = false; //   控制对话框的状态
       });
 }
+
 
 export function delmajor(e,that){
   fetch(`/api/admin/education/major/${e}`,{
@@ -109,6 +118,7 @@ export function delmajor(e,that){
     return
   })
 }
+
 
 
 export function editcampus(refs,dataSource,e,that){
@@ -156,6 +166,7 @@ export function editmajor(refs,e,that){
         that.editvisible=false;
         console.log(that.datas);
         });
+
 }
 
 
@@ -209,4 +220,5 @@ export function deldorm(e,that){
     }
     return
   })
+
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="hello">
+
     <a-card class="login">
       <div class="login-in">登录</div>
+
       <a-form
         id="components-form-demo-normal-login"
         :form="form"
@@ -16,7 +18,9 @@
           { rules: [{ required: true, message: '你还没有输入账号!' }] }
         ]"
             placeholder="请输入账号"
+
             size="large"
+
           >
             <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
           </a-input>
@@ -180,10 +184,10 @@ export default {
 }
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
+
 }
 #components-form-demo-normal-login .login-form-item {
   width: 100%;
-
   margin: 30px 0;
 }
 #components-form-demo-normal-login .login-form-forgot {
@@ -214,6 +218,22 @@ export default {
   cursor: pointer;
 }
 .login-in {
+  font-size: 29px;
+  width: 100%;
+  text-align: center;
+}
+.refresh {
+  font-size: 12px;
+  line-height: 10px;
+  height: 10px;
+  margin-top: 30px;
+}
+.refresh:hover {
+  color: rgb(0, 0, 255);
+  cursor: pointer;
+
+}
+.login-in{
   font-size: 29px;
   width: 100%;
   text-align: center;

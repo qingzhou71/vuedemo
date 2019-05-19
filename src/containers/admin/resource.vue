@@ -1,7 +1,9 @@
 <template>
   <div class="resource">
     <a-card class="resourcecard">
+
       <signout class="admin-singnout"></signout>
+
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加资源
       </a-button>
@@ -40,7 +42,9 @@
 </template>
 
 <script>
+
 import signout from "@/components/signout";
+
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
@@ -114,7 +118,9 @@ const editForm = {
 };
 
 export default {
+
   components: { CollectionCreateForm, signout, editForm },
+
   data() {
     return {
       dataSource: [],
@@ -145,6 +151,7 @@ export default {
   },
   methods: {
     confirm(e) {
+
       console.log(e);
       fetch(`/api/admin/resource/${e}`, {
         method: "DELETE"
@@ -154,6 +161,7 @@ export default {
         }
         return;
       });
+
     },
     showModal() {
       this.visible = true;
@@ -303,6 +311,7 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+
 .resourcelist span:hover {
   color: rgb(28, 28, 221);
 }
@@ -313,6 +322,7 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+
 .resourcelist div {
   padding: 10px;
   font-size: 17px;
@@ -333,5 +343,7 @@ export default {
   top: 20px;
   right: 5px;
 }
+
+
 
 </style>

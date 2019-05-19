@@ -6,7 +6,9 @@
       </div>
     <div class='centermenu'>
       <sidemenu class='sidemenu'></sidemenu>
+
     <!-- 将个人中心作为组件提取出来 -->
+
    <div class="ce"><p>为了看出来这个页面到底是什么东西：   个人中心</p></div>
     </div>
   </div>

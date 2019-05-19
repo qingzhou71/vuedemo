@@ -171,6 +171,7 @@ export default {
     confirm(e) {
         // 删除操作，在这里发起del请求和get请求来刷新列表
       console.log(this.dataSource);
+
       this.dataSource.splice(this.dataSource.length-1,1);
       console.log(e);
       // dataSource.splice(e,1);
@@ -221,6 +222,7 @@ export default {
                 })
               });
               
+
     },
     showModal() {
       this.visible = true;
@@ -294,9 +296,11 @@ export default {
 
   position: relative;
 
+
 }
 .departmentcard .ant-card-body {
   height: 100%;
+
 }
 .addplus {
   margin: 20px;

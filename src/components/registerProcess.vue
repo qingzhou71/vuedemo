@@ -1,4 +1,5 @@
 <template>
+
   <div class="process" :style='processstyle'>
     <span style='display:none'>{{msgs}}
     {{lat}}
@@ -20,11 +21,13 @@
           <a-button type='primary' >完成注册</a-button>
           </div>
           </div>
+
   </div>
 </template>
 
 
 <script >
+
 const campusdata = 
   {
     campusid: "10",
@@ -46,11 +49,13 @@ export default {
       lat:1,
       lng:2,
       timer:'',
+
       count:0,
       campusdata,
       processstyle:{
         height:window.screen.availHeight-146+'px'
       }
+
     };
   },
   methods: {
@@ -58,7 +63,9 @@ export default {
       var _that=this;   //存储this的值，防止实例化内部拿不到需要的this
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
         center:[108.9,34.15],
+
         zoom: 13 
       });
       AMap.plugin("AMap.Geolocation", function() {
@@ -81,7 +88,9 @@ export default {
     navi(lat,lng,count){
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
         center:[lng,lat],
+
         zoom: 13 //初始视窗
       });
       var walking = new AMap.Walking({
@@ -89,7 +98,9 @@ export default {
         panel: "panel"
     }); 
     //根据起终点坐标规划步行路线
+
     walking.search([108.8991665840,34.1499923318,108.8991665840], [108.9008617401,34.153126515], function(status, result) {
+
         if (status === 'complete') {
             log.success('绘制步行路线完成')
         } else {
@@ -111,6 +122,7 @@ export default {
   },
   mounted() {
      this.maps();
+
     //  document.documentElement.scrollTop=145;
     //  console.log(document.documentElement.scrollTop);
     console.log(document.documentElement.clientHeight);
@@ -120,6 +132,7 @@ export default {
     //    console.log('12345')
     //  },0);
     //  this.timer=setInterval(this.maps,10000);
+
   },
   // beforeUpdate(){
   //   // this.navi();
@@ -129,6 +142,7 @@ export default {
 </script>
 <style>
 .process {
+
   /* height: 775px; */
   
   /* position: relative; */
@@ -146,12 +160,14 @@ margin-top: 15px;
   height: 90%;
   width: 100%;
    position: relative;
+
 }
 #panel {
   
   position: absolute;
   background-color: white;
   max-height: 90%;
+
   overflow-y: scroll;
   top: 0px;
   right: 0px;
@@ -204,6 +220,7 @@ margin-top: 15px;
 }
 .registtext{
   height: 30%;
+
 }
 </style>
 

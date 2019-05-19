@@ -28,6 +28,7 @@ export default {
   data(){
     return{
       SelectedKeys:[0],
+
       department:'建筑',
       menu:['业务管理','注册管理'], // menu是资源得获取，在data初始化前
       operationselect:true,
