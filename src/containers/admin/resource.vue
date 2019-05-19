@@ -274,7 +274,9 @@ export default {
   margin: 0 auto;
   max-width: unset;
   height: 100%;
+
   position: relative;
+
 }
 .addplus {
   margin: 20px;
@@ -331,4 +333,5 @@ export default {
   top: 20px;
   right: 5px;
 }
+
 </style>

@@ -11,6 +11,7 @@
         <a-form-item class="login-form-item">
           <a-input
             v-decorator="[
+
           'username',
           { rules: [{ required: true, message: '你还没有输入账号!' }] }
         ]"
@@ -46,6 +47,7 @@
             />
             <img :src="src" style="width:100px;margin-right:5px" title="看不清，换一张" @click="refresh">
             <!-- <div class="refresh" @click="refresh">换一张</div> -->
+
           </div>
         </a-form-item>
 
@@ -190,6 +192,7 @@ export default {
 }
 #components-form-demo-normal-login .login-form-button {
   width: 100%;
+
   margin-top: 30px;
 }
 .login {

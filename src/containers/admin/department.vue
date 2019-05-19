@@ -1,7 +1,9 @@
 <template>
   <div class="department">
     <a-card class="departmentcard">
+
       <signout class='admin-singnout'></signout>
+
         <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加部门
       </a-button>
@@ -33,7 +35,9 @@
   </div>
 </template>
 <script>
+
 import signout from '@/components/signout'
+
 require("es6-promise").polyfill();
 require('isomorphic-fetch');
 // const dataSource = [
@@ -97,7 +101,9 @@ const CollectionCreateForm = {
 };
 
 export default {
+
   components: { CollectionCreateForm,signout },
+
   beforeCreate(){
       // get请求进行数据的初始化，资源，角色，以及数据的处理（数据的处理好像很麻烦）
       fetch(`/api/admin/resource`, {
@@ -285,7 +291,9 @@ export default {
   margin: 0 auto;
   max-width: unset;
   height: 100%;
+
   position: relative;
+
 }
 .departmentcard .ant-card-body {
   height: 100%;

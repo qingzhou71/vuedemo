@@ -16,9 +16,7 @@
       <h1>管理员列表：</h1>
       <div class="listboard">
         <a-table :columns="columns" :dataSource="dataSource" bordered>
-          <template slot='department' slot-scope="text, record">
-            {{dataSource.depart}}
-          </template>
+          
           <template slot="del" slot-scope="text, record">
             <a-popconfirm
               title="确定要删除此人员么？"
@@ -122,7 +120,9 @@ const CollectionCreateForm = {
               }
             ]"
           >
+
           <a-select-option v-for='(item,index) in resourcelist' :key='item.id'>{{item.name}}</a-select-option>
+
           </a-select>
         </a-form-item>
         <a-form-item label='备注'>
@@ -289,7 +289,9 @@ export default {
   margin: 0 auto;
   max-width: unset;
   height: 100%;
+
   position: relative;
+
 }
 .addplus {
   margin: 20px;
@@ -334,5 +336,6 @@ export default {
   top: 20px;
   right: 5px;
 }
+
 </style>
 

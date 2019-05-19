@@ -25,15 +25,6 @@
         <a-icon type="inbox" />
         <span>人员管理</span>
       </a-menu-item>
-      <!-- <a-sub-menu key="sub1" class='menuItem'>
-        <span slot="title" style="font-size:18px">
-            <a-icon type="mail" />
-            <span>校园管理</span></span>
-        <a-menu-item key="5" class='subItem'>学院</a-menu-item>
-        <a-menu-item key="6" class='subItem'>专业</a-menu-item>
-        <a-menu-item key="7" class='subItem'>宿舍</a-menu-item>
-        <a-menu-item key="8" class='subItem'>建筑</a-menu-item>
-      </a-sub-menu> -->
       
     </a-menu>
   </div>
@@ -54,24 +45,19 @@ export default {
       this.collapsed = !this.collapsed
     },
     selected({item, key, selectedKeys }){
-      // console.log(item, key, selectedKeys );
-      // console.log(selectedKeys)
+
       switch(selectedKeys[0]){
         case '1': this.$router.push({ name:'resource'}); break
         case '2': this.$router.push({ name:'department'}); break
         case '3': this.$router.push({ name:'managers'}); break
-        // case '5': this.$router.push({ name:'institution'}); break
-        // case '6': this.$router.push({ name:'major'}); break
-        // case '7': this.$router.push({ name:'dormitory'}); break
-        // case '8': this.$router.push({ name:'location'}); break
+
       }
     }
   },
   watch:{
     select(){
       this.defaultSelectedKeys=this.select;
-      // console.log(this.select)
-    }
+
   }
 }
 </script>

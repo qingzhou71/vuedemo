@@ -137,6 +137,7 @@ export default {
   height: 100%;
   width: 100% !important;
   margin: 0 !important;
+
   max-width: unset !important;
 }
 .re-card .ant-card-body {

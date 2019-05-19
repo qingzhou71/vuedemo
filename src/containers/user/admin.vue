@@ -22,6 +22,7 @@ export default {
       case 'resource':this.SelectedKeys=['1'];break
       case 'department':this.SelectedKeys=['2'];break
       case 'managers':this.SelectedKeys=['3'];break
+
     }
   },
   beforeUpdate(){
@@ -30,6 +31,7 @@ export default {
       case 'resource':this.SelectedKeys=['1'];break
       case 'department':this.SelectedKeys=['2'];break
       case 'managers':this.SelectedKeys=['3'];break
+
     }
   }
 };
