@@ -4,7 +4,7 @@
       <signout class="manager-singnout"></signout>
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>
-        添加{{departments}}
+        添加{{department}}
       </a-button>
 
       <collection-create-form
@@ -16,47 +16,45 @@
       />
       <h1>{{department}}详情：</h1>
       <div v-if="list" class="listboard">
-        <div v-for="(item,index) in dataSource" :key="item.name" class="resourcelist">
-          <h2>{{item.name}}</h2>
-
-          <a-popconfirm :title="deltitle" okText="确认" cancelText="取消" @confirm="confirm(item.id)">
-
+        <div v-for="(item) in dataSource" :key="item.id" class="resourcelist">
+          <h2 v-if='usernameshow'>用户名：{{item.username}}</h2>
+          <h2 v-if='dormshow'>用户名：{{item.username}}</h2>
+          <h2 v-else>{{item.name}}</h2>
+          <a-popconfirm :title="deltitle" okText="确认" cancelText="取消" @confirm="confirm(item.id,item.name)">
             <span class="deleted">
               <a-icon type="delete"/>
             </span>
           </a-popconfirm>
           <span class="edit">
-
-            <a-icon type="edit" @click="showedit(index,item.id)"/>
+            <a-icon type="edit" @click="showedit(item,item.id)"/>
           </span>
-          <editform
+          
+          <div v-if='majorshow'>{{item.campus.name}}</div>
+          <div v-if='usernameshow'>所属学院:{{item.depart}}</div>
+           <div v-if='dormshow'>所属宿舍楼：{{item.depart}}</div>
+        </div>
+        <editform
             ref="editForm"
             :visible="editvisible"
-            :recorddata="currentdata"
-            :name="department"
-            :editindex="editindex"
+            :recorddata="currentitem"
+            :department="department"
+            :campuslist='campuslist'
             @cancel="handleCancel"
             @create="handleEdit"
           />
-          <!-- <div>{{item.campus.name}}</div> -->
-
-        </div>
       </div>
 
-      <div v-else class="listboard">
-        <a-table :columns="columns" :dataSource="datas" bordered>
-
+      <div v-else class="listtable">
+        <a-table 
+         :columns="locationcolumns"
+         :dataSource="datas"
+         :pagination="pagination"
+         bordered 
+         
+        >
           <template slot="del" slot-scope="text, record" class="todo">
-            <a class="edits" @click="showedittable(record.key)">修改</a>
-            <editform
-              :visible="editvisible"
-              :recorddata="currentdata"
-              :name="department"
-              :editindex="editindex"
-              @cancel="handleCancel"
-              @create="handleEdit"
-            />
-
+            <a class="edits" @click="showedittable(record)">修改</a>
+            
             <a-popconfirm
               :title="deltitle"
               v-if="datas.length"
@@ -70,6 +68,14 @@
 
           </template>
         </a-table>
+        <editform
+        ref="editForm"
+              :visible="editvisible"
+              :recorddata="currentitem"
+              :department="department"
+              @cancel="handleCancel"
+              @create="handleEdit"
+            />
       </div>
     </a-card>
   </div>
@@ -84,61 +90,20 @@ import *as sever from "@/components/api.js";
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
-const dataSource = [
-  {
-    name: "通信与信息工程学院"
-  },
-  {
-    name: "电子工程学院"
-  },
-  {
-    name: "自动化学院"
-  },
-  {
-    name: "人文社科学院"
-  },
-  {
-    name: "计算机学院"
-  },
-  {
-    name: "马克思主义学院"
-  },
-  {
-    name: "经济与管理学院"
-  }
-]; // 应该为初始化之前get的列表
-const majorcolumns = [
-  {
-    title: "专业名称",
-    dataIndex: "name"
-  },
-  {
-    title: "创建时间",
-    dataIndex: "createdTime"
-  },
-  {
-    title: "所属学院",
-    dataIndex: "campus"
-  },
+ // 应该为初始化之前get的列表
 
-  {
-    title: "操作",
-    dataIndex: "del",
-    scopedSlots: { customRender: "del" }
-  }
-];
 const locationcolumns = [
   {
     title: "建筑名称",
     dataIndex: "name"
   },
   {
-    title: "创建时间",
-    dataIndex: "createdTime"
+    title: "位置经度",
+    dataIndex: "longitude"
   },
   {
-    title: "所处经纬度",
-    dataIndex: "xy"
+    title: "位置纬度",
+    dataIndex: "latitude"
   },
 
   {
@@ -150,38 +115,64 @@ const locationcolumns = [
 export default {
   props: ["department"],
   beforeCreate() {
-    // console.log(this.department)
+    // console.log(department)
     this.form = this.$form.createForm(this);
-
+     fetch(`/api/campus`, {
+    method: "GET"
+  })
+    .then(res => {
+      return res.json();
+    })
+    .then(res => {
+      console.log(res.content);
+      this.campuslist = res.content;
+    });
     
     // sever.getcampus(this);
     // sever.getmajor(this);
-    sever.getdorm(this);
+    // sever.getdorm(this);
+    // sever.getlocation(this);
   },
   beforeMount() {
-    // console.log(this.department)
-    if (this.department === "学院" || this.department === "专业"||this.department==='宿舍') {
-
+    console.log(this.departments)
+    if (this.departments === "学院" || this.departments === "学院管理员"||this.departments==='宿舍'||this.departments === "宿舍管理员"||this.departments==='专业') {
       this.list = true;
     } else {
       this.list = false;
     }
+     switch(this.departments){
+      case '学院':sever.getcampus(this);break;
+      case '专业':sever.getmajor(this);break;
+      case '宿舍':sever.getdorm(this);break;
+      case '建筑': sever.getlocation(this);break;
+      case '学院管理员':sever.getcamman(this);break;
+      case '宿舍管理员':sever.getdorman(this);break;
+    };
+
+  },
+  beforeUpdate(){
+    console.log(this.departments)
+    
   },
   components: { CollectionCreateForm, signout, editform },
   data() {
     return {
-      dataSource,
+      dataSource:[],
+      campuslist:[],
+      rolelist:[],
       departments: this.department,
       deltitle: "确认删除此" + this.department + "吗？",
       list: true,
       visible: false,
 
       editvisible: false,
-      currentdata: { name: "123", mark: "765" },
+      currentitem: {},
       currentids:0,
       editindex: 0,
-
-      columns: this.department === "专业" ? majorcolumns : locationcolumns,
+      usernameshow:this.department==='学院管理员'?true:false,
+      dormshow:this.department==='宿舍管理员'?true:false,
+      majorshow: this.department === "专业" ? true : false,
+      locationcolumns,
       datas: [
         {
           key: "通信工程",
@@ -195,60 +186,72 @@ export default {
           campus: "电子工程学院",
           createdTime: "2019-04-17"
         }
-      ]
+      ],
+      pagination:{
+        hideOnSinglePage:true,
+        defaultCurrent:1
+        }
     };
   },
   methods: {
-    confirm(e) {
-
+    confirm(e,name) {
       
       console.log(e);
       
       // sever.delcampus(e,this);
       // sever.delmajor(e,this);
-      sever.deldorm(e,this);
+      // sever.deldorm(e,this);
+      switch(this.department){
+      case '学院':sever.delcampus(e,name,this);break;
+      case '专业':sever.delmajor(e,this);break;
+      case '宿舍':sever.deldorm(e,name,this);break;
+      case '学院管理员':sever.delcamman(e,this);break;
+      case '宿舍管理员':sever.deldorman(e,this);break;
+    };
     },
     
 
     confirmtable(key) {
       // 删除操作，在这里发起del请求和get请求来刷新列表
 
-      const sa = this.datas.filter(item => item.key == key);
-      this.datas = this.datas.filter(item => item.key !== key);
-      console.log(this.datas);
+      // const sa = this.datas.filter(item => item.key == key);
+      // this.datas = this.datas.filter(item => item.key !== key);
+      sever.dellocation(key,this);
       console.log(key);
-      console.log(sa[0]);
+     
     },
     showModal() {
       this.visible = true;
     },
-
-    showedit(index,id) {
+    showedit(item,id) {
       this.editvisible = true;
-      // console.log(index);
-      // this.currentdata = this.dataSource[index];
-      //  console.log(this.currentdata);
-      this.editindex = index;
-      //  console.log(this.index);
       this.currentids=id;
+      this.currentitem=item;
     },
-    showedittable(key) {
-      this.editvisible = true;
-      this.currentdata = this.datas.filter(item => item.key == key)[0];
-      console.log(this.currentdata);
-      this.editindex = key;
+    showedittable(item) {
+       this.editvisible = true;
+      console.log(item);
+      this.currentitem=item;
     },
 
     handleCreate() {
       console.log(this.$refs);
       console.log(this.$refs.collectionForm.form);
-      if (this.department === "学院") {
-        sever.addcampus(this.$refs, dataSource, this);
-      } else {
-      //  sever. addmajor(this.$refs, this);
-      sever.adddorm(this.$refs,this);
-      }
-
+      // if (this.department === "学院") {
+      //   sever.addcampus(this.$refs,  this);
+      // } else {
+      // //  sever.addmajor(this.$refs, this);
+      // // sever.adddorm(this.$refs,this);
+      // sever.addlocation(this.$refs,this);
+      // }
+      switch(this.department){
+      case '学院':sever.addcampus(this.$refs,this);break;
+      case '专业':sever.addmajor(this.$refs, this);break;
+      case '宿舍':sever.adddorm(this.$refs,this);break;
+      case '建筑':sever.addlocation(this.$refs,this);break;
+      case '学院管理员':sever.addcamman(this.$refs,this);break;
+      case '宿舍管理员':sever.adddorman(this.$refs,this);break;
+    };
     },
     handleCancel(e) {
       console.log("Clicked cancel button");
@@ -262,40 +265,38 @@ export default {
       // }else{
       //     editmajor(this.$refs,e,this);
       // }
-      // editcampus(this.$refs,dataSource,e,this)
-      //  editmajor(this.$refs,e,this);
-      console.log(this.$refs);
-      console.log(e);
-      console.log(this.editindex);
-      const form = this.$refs.editForm[e].form;
-      console.log(this.$refs.editForm[e]);
-      form.validateFields((err, values) => {
-        if (err) {
-          return;
-        }
-        console.log("Received values of form: ", values);
-        fetch(`/api//admin/education/campus`,{
-          method:'PUT',
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "content-type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            name: values.name,
-            id:this.currentids
-          })
-        }).then(res=>{
-          return res.json()
-        }).then(res=>{
-          console.log(res);
-        })
-        
-        this.editvisible = false;
-        console.log(dataSource);
-      });
-      form.resetFields();
+    //  sever.editcampus(this.$refs,this)
+      //  sever.editmajor(this.$refs,this);
+      // sever.editdorm(this.$refs,this);
+      // sever.editlocation(this.$refs,this);
+      switch(this.department){
+      case '学院':sever.editcampus(this.$refs,this.currentitem.name,this);break;
+      case '专业':sever.editmajor(this.$refs, this);break;
+      case '宿舍':sever.editdorm(this.$refs,this);break;
+      case '建筑':sever.editlocation(this.$refs,this);break;
+      case '学院管理员':sever.editcamman(this.$refs,this);break;
+      case '宿舍管理员':sever.editdorman(this.$refs,this);break;
 
+    };
+      
+    }
+  },
+  watch:{
+    department(){
+      console.log(this.department);
+      this.departments=this.department;
+        this.deltitle= "确认删除此" + this.department + "吗？";
+      if (this.departments === "学院" || this.departments === "专业"||this.departments==='宿舍') {
+      this.list = true;
+    } else {
+      this.list = false;
+    }
+     switch(this.departments){
+      case '学院':sever.getcampus(this);break;
+      case '专业':sever.getmajor(this);break;
+      case '宿舍':sever.getdorm(this);break;
+      case '建筑': sever.getlocation(this);break;
+    };
     }
   }
 };
@@ -304,6 +305,7 @@ export default {
 <style>
 .operation {
   width: 100%;
+  height: 100%;
 }
 .operationcard {
   width: 98%;
@@ -370,6 +372,14 @@ export default {
   height: 72%;
   overflow-y: scroll;
 
+}
+.listtable{
+  border: 1px solid rgb(196, 195, 195);
+  border-radius: 4px;
+  /* padding: 0 20px; */
+  margin: 0 20px;
+  height: 80%;
+  overflow-y: scroll;
 }
 .manager-singnout {
   position: absolute;

@@ -10,18 +10,7 @@
       style="height:100%"
       @select='selected'
     >
-      <!-- <a-menu-item key="1" class='menuItem'>
-        <a-icon type="pie-chart" />
-        <span>事项管理</span>
-      </a-menu-item>
-      <a-menu-item key="2" class='menuItem'>
-        <a-icon type="desktop" />
-        <span>部门管理</span>
-      </a-menu-item>
-      <a-menu-item key="3" class='menuItem'>
-        <a-icon type="inbox" />
-        <span>人员管理</span>
-      </a-menu-item> -->
+    
       <a-menu-item v-for="(item,index) in sidemenu" :key="index" class='menuItems'><a-icon type="pie-chart" />{{item}}</a-menu-item>
       
     </a-menu>
@@ -39,7 +28,8 @@ export default {
     }
   },
   beforeMount(){
-      console.log(this.defaultSelectedKeys)
+      console.log(this.defaultSelectedKeys);
+      console.log(this.sidemenu);
   },
   methods: {
     toggleCollapsed () {
@@ -63,6 +53,7 @@ export default {
     },
     menu(){
         console.log(this.menu);
+        this.sidemenu=this.menu;
     }
   }
 }

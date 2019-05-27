@@ -133,6 +133,15 @@ export default {
           this.$router.push({ path: "/register" });
       }
     this.form = this.$form.createForm(this);
+    fecth(`/api/mock/stu/{username}`,{
+      method:'GET'
+    }).then(res=>{
+      return res.json()
+    }).then(res=>{
+      console.log(res)
+      this.infos=res;
+
+    })
   },
   beforeMount() {
     console.log(infos);
@@ -149,7 +158,8 @@ export default {
           console.log("Received values of form: ", values);
           localStorage.setItem('info','sure');
           console.log(localStorage.getItem('info'));
-          this.$router.push({ path: "/register" });
+          this.$router.push({ path: "/" });
+          // post请求，创建新的学生
         }
            });
       }
@@ -211,5 +221,15 @@ export default {
     width:100%;
     margin-top: 10px;
 }
-
+.infocard .ant-form-item{
+  margin-bottom: 10px !important;
+}
+@media screen and (max-width:600px) {
+  .infonote{
+    font-size: 10px;
+  }
+  .infotitle{
+    font-size: 18px;
+  }
+}
 </style>

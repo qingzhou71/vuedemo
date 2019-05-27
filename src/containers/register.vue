@@ -24,7 +24,6 @@
               <li>4.这里依旧是文字,但是字数要多一点，因为我想要看效果</li>
               <li>5.这里仍然是文字</li>
             </ul>
-
             <a-button class="forsure" type="primary" @click="start">知道了，去报道！</a-button>
           </div>
           <div v-else>
@@ -60,19 +59,78 @@ export default {
     return {
       current: ["mail"],
       timer: false, //timer的值最终取决于时间，固定时间前为true，否则为false
-
-      toprocess: sessionStorage.getItem("topprocess")
+      toprocess: sessionStorage.getItem("topprocess"),
+      stuinfo: {},
+      status:{},
+      adminstatus:[],
+      stustatus:[]
     };
   },
 
   components: { sidemenu, registerProcess, xupt },
   beforeCreate() {
-    if(localStorage.getItem('identity')!=='新生'){
-      console.log('123456');
-      this.$router.push({path:'/'});
-    }else{
-      console.log('qwertyu');
-    }
+    // if(localStorage.getItem('identity')!=='新生'){
+    //   console.log('123456');
+    //   this.$router.push({path:'/'});
+    // }else{
+    //   console.log('qwertyu');
+    // }
+    fetch(`/api/stu/me`, {
+      method: "GET"
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        console.log(res);
+        this.stuinfo = res;
+        this.stuinfo.campusname = res.campus.name; //获取学生基本信息
+        //判断该用户身份
+
+        fetch(`/api/stu/reporting`, {
+          method: "GET"
+        }).then(res => {
+          if (res.status === 200) {
+            return res.json();
+          } else if (res.status === 500) {
+            fetch(`/api/stu/reporting`, {
+              method: "POST",
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "content-type": "application/json"
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                adminStatus: "",
+                finish: false,
+                stuStatus: "",
+                username: this.stuinfo.username
+              })
+            }).then(res=>{
+              if(res.status===200){
+                return
+              }
+            });
+          }
+        }).then(res=>{
+          this.status=res;
+          this.adminstatus=res.adminStatus.split('，');
+          this.stustatus=res.stuStatus.split('，');
+          if(res.finish===true){
+            this.$router.push({path:'/performance'})
+          }
+        })
+        //根据学生的所在学院获取当前流程
+        fetch(`/api/reporting/${res.campus.id}`, {
+          method: "GET"
+        })
+          .then(res => {
+            return res.json();
+          })
+          .then(res => {
+            console.log(res);
+          });
+      });
   },
   created() {},
 
@@ -82,9 +140,6 @@ export default {
     },
     changeitem({ key }) {
       this.current = [key];
-      //  console.log(window.screen.availHeight);
-      //  console.log(window.screen.height);
-      // document.body.clientHeight 为屏幕可用高度，可以根据这个数值来设置页面的最小高度
     },
     start() {
       this.toprocess = true;

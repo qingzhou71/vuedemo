@@ -14,11 +14,11 @@
    
    <div class='registtext'>
        <span>当前流程:</span>
-    <a-steps size='small'  :current="1" labelPlacement='vertical'>
-            <a-step v-for='(items,index) in campusdata.process' :key='index' :title="items.name" />
+    <a-steps size='small'  :current="currentstep[0].seq-1" labelPlacement='vertical'>
+            <a-step v-for='(items,index) in campusdata.process' :key='index' :title="items.location.name" />
           </a-steps>
           <div class='reforsure'>
-          <a-button type='primary' >完成注册</a-button>
+          <a-button type='primary' @click='finish'>完成注册</a-button>
           </div>
           </div>
 
@@ -30,13 +30,7 @@
 
 const campusdata = 
   {
-    campusid: "10",
-    campusname: "通信与信息工程学院",
-    process: [
-      { sep: 1, name: "学院办事处", key: 0 },
-      { sep: 2, name: "图书馆", key: 1 },
-      { sep: 3, name: "宿舍管理处", key: 2 },
-    ]
+    
   };
   
 
@@ -49,13 +43,16 @@ export default {
       lat:1,
       lng:2,
       timer:'',
-
+      stuinfo:{},
+      status:{},
+      adminstatus:[],
+      stustatus:[],
       count:0,
       campusdata,
       processstyle:{
         height:window.screen.availHeight-146+'px'
-      }
-
+      },
+      currentstep:{}
     };
   },
   methods: {
@@ -67,7 +64,8 @@ export default {
         center:[108.9,34.15],
 
         zoom: 13 
-      });
+      });      
+      // map是否能够提出在methods外
       AMap.plugin("AMap.Geolocation", function() {
         // console.log(_that);
         var geolocation = new AMap.Geolocation({
@@ -83,9 +81,10 @@ export default {
             alert("定位失败");
           }
         });
-      });
+      }); 
     },
     navi(lat,lng,count){
+      console.log(lat,lng)
       let map = new AMap.Map("container", {
         resizeEnable: true, 
 
@@ -98,9 +97,7 @@ export default {
         panel: "panel"
     }); 
     //根据起终点坐标规划步行路线
-
-    walking.search([108.8991665840,34.1499923318,108.8991665840], [108.9008617401,34.153126515], function(status, result) {
-
+    walking.search([lng,lat], ['108.9008617401','34.153126515'], function(status, result) {
         if (status === 'complete') {
             log.success('绘制步行路线完成')
         } else {
@@ -113,7 +110,121 @@ export default {
         this.lng=result.position.lng;
         this.count++;
       },
-    
+    finish(){
+      // put请求修改status，判断流程的长度，与status长度进行比较，决定finish的值
+      console.log(this.stustatus);
+      console.log(this.currentstep);
+      console.log(this.currentstep[0].seq)
+      this.stustatus.push(this.currentstep[0].seq);
+      if(this.adminstatus[this.adminstatus.length-1]!==this.currentstep[0].seq){
+        alert('请先到相关部门进行注册')
+      }
+      else{
+       this.stustatus=this.stustatus.join(',')
+       fetch(`/api/stu/reporting`,{
+        method:'PUT',
+         headers: {
+        "Access-Control-Allow-Origin": "*",
+        "content-type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        adminStatus:this.adminstatus.join(','),
+        id:this.status.id,
+        stuStatus:this.stustatus,
+        finish:false,
+        username:this.stuinfo.username
+      })
+      }).then(res=>{
+        return 
+      })
+      }
+    }
+  },
+  beforeCreate(){
+    fetch(`/api/stu/me`, {
+      method: "GET"
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        console.log(res);
+        this.stuinfo = res;
+        this.stuinfo.campusname = res.campus.name; //获取学生基本信息
+        //判断该用户身份
+
+        fetch(`/api/stu/reporting`, {
+          method: "GET"
+        }).then(res => {
+          if (res.status === 200) {
+            return res.json();
+          }
+           else if (res.status === 500) {
+            fetch(`/api/stu/reporting`, {
+              method: "POST",
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "content-type": "application/json"
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                adminStatus: "",
+                finish: false,
+                stuStatus: "",
+                username: this.stuinfo.username
+              })
+            }).then(res=>{
+              if(res.status===200){
+                return
+              }
+            });
+          }
+        }).then(res=>{
+          this.status=res;
+          this.adminstatus=res.adminStatus.split('，');
+          console.log(this.adminstatus);
+          if(res.stuStatus===''){
+            this.stustatus=[];
+          }else{
+          this.stustatus=res.stuStatus.split('，');
+          }
+          if(res.finish===true){
+            this.$router.push({path:'/performance'})
+          }
+
+           fetch(`/api/reporting/${this.stuinfo.campus.id}`, {
+          method: "GET"
+        })
+          .then(res => {
+            return res.json();
+          })
+          .then(res => {
+            console.log(res);
+            console.log(this.adminstatus);
+            console.log(this.stustatus);
+            this.campusdata=res;
+            if(this.adminstatus.length===0){  //判断管理员是否注册，没有则取第一步
+              this.currentstep=res.process.filter(item=>item.seq==1)
+            }
+            else{  //如果管理员已经注册，判断学生是否注册，如果没有继续第一步，按钮可用，如果注册，则取下一步，判断学生是否注册该点
+            if(this.adminstatus[this.adminstatus.length-1]==this.stustatus[this.stustatus.length-1]){
+              console.log(1)
+              console.log(this.adminstatus[this.adminstatus.length-1]*1+1)
+               this.currentstep= res.process.filter(item=>item.seq==this.adminstatus[this.adminstatus.length-1]*1+1);
+            }
+            else{
+           this.currentstep= res.process.filter(item=>item.seq==this.adminstatus[this.adminstatus.length-1]);
+            }
+            }
+            console.log(this.currentstep);
+          });
+        })
+        //根据学生的所在学院获取当前流程
+
+       
+
+      });
   },
   beforeUpdate(){
     this.navi(this.lat,this.lng,this.count);
@@ -122,9 +233,6 @@ export default {
   },
   mounted() {
      this.maps();
-
-    //  document.documentElement.scrollTop=145;
-    //  console.log(document.documentElement.scrollTop);
     console.log(document.documentElement.clientHeight);
     //  setTimeout(()=>{
     //   //  document.documentElement.scrollTop=100;
@@ -132,7 +240,7 @@ export default {
     //    console.log('12345')
     //  },0);
     //  this.timer=setInterval(this.maps,10000);
-
+     //   定位刷新，控制地图不重载
   },
   // beforeUpdate(){
   //   // this.navi();
