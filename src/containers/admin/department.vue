@@ -226,12 +226,7 @@ export default {
   methods: {
     confirm(e) {
         // 删除操作，在这里发起del请求和get请求来刷新列表
-<<<<<<< HEAD
       // console.log(this.dataSource);
-=======
-      console.log(this.dataSource);
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       this.dataSource.splice(this.dataSource.length-1,1);
       // console.log(e);
       // dataSource.splice(e,1);

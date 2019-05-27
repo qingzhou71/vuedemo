@@ -136,7 +136,6 @@ export default {
     this.form = this.$form.createForm(this);
     // console.log(this.name);
 
-<<<<<<< HEAD
     //  fetch(`/api/admin/me`,{
     //   method:'GET'
     // }).then(res=>{
@@ -148,12 +147,9 @@ export default {
     //   this.name=res.authorities[0].authority.substr(0,2);
     //   console.log(this.name);
     // });
-=======
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     fetch(`/api/campus`, {
       method: "GET"
     })
-<<<<<<< HEAD
       .then(res => {
         return res.json();
       })
@@ -180,13 +176,6 @@ export default {
   },
   mounted(){
     console.log(this.name);
-=======
-    .then(res => {
-      console.log(res.content);
-      this.resourcelist = res.content;
-    });
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
   },
   data() {
     return {

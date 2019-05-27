@@ -49,11 +49,7 @@
 <script>
 
 import signout from "@/components/signout";
-<<<<<<< HEAD
 import constant from '@/components/constant.js';
-=======
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 

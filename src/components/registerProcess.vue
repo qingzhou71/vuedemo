@@ -43,25 +43,16 @@ export default {
       lat:1,
       lng:2,
       timer:'',
-<<<<<<< HEAD
       stuinfo:{},
       status:{},
       adminstatus:[],
       stustatus:[],
-=======
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       count:0,
       campusdata,
       processstyle:{
         height:window.screen.availHeight-146+'px'
-<<<<<<< HEAD
       },
       currentstep:{}
-=======
-      }
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     };
   },
   methods: {
@@ -106,13 +97,7 @@ export default {
         panel: "panel"
     }); 
     //根据起终点坐标规划步行路线
-<<<<<<< HEAD
     walking.search([lng,lat], ['108.9008617401','34.153126515'], function(status, result) {
-=======
-
-    walking.search([108.8991665840,34.1499923318,108.8991665840], [108.9008617401,34.153126515], function(status, result) {
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
         if (status === 'complete') {
             log.success('绘制步行路线完成')
         } else {
@@ -248,12 +233,6 @@ export default {
   },
   mounted() {
      this.maps();
-<<<<<<< HEAD
-=======
-
-    //  document.documentElement.scrollTop=145;
-    //  console.log(document.documentElement.scrollTop);
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     console.log(document.documentElement.clientHeight);
     //  setTimeout(()=>{
     //   //  document.documentElement.scrollTop=100;
@@ -261,11 +240,7 @@ export default {
     //    console.log('12345')
     //  },0);
     //  this.timer=setInterval(this.maps,10000);
-<<<<<<< HEAD
      //   定位刷新，控制地图不重载
-=======
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
   },
   // beforeUpdate(){
   //   // this.navi();
