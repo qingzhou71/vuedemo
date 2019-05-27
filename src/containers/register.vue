@@ -161,7 +161,9 @@ export default {
 /* .sidemenu{
   position: absolute;
 } */
+
 .register-img {
+
   width: 100%;
   height: 150px;
   background-color: aliceblue;
@@ -208,19 +210,23 @@ export default {
   margin: 20px 15%;
   min-width: 140px;
 }
+
 @media screen and (min-width: 600px) {
   .forsure {
     width: 300px;
     margin: 20px;
   }
   /* .test{
+
     width: 80%;
     margin: 0 auto;
     overflow: hidden;
     border-radius: 2%;
+
   } */
 }
 @media screen and (min-width) {
+
 }
 </style>
 

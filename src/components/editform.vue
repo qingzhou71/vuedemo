@@ -146,11 +146,25 @@ export default {
       // console.log(this.recorddata,65);
        this.datas=this.recorddata;
       //  console.log(this.datas.name);
+<<<<<<< HEAD
           // this.defaultname=this.recorddata.name;
           // console.log(this.defaultname,678);
           
     },
     
+=======
+          this.defaultname=this.recorddata.name;
+
+          // console.log(this.defaultname,678);
+          
+    },
+    editindex(){
+      // console.log(this.editindex);
+      this.index=this.editindex;
+      // console.log(this.editindex);
+
+    }
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
   }
 }
 </script>

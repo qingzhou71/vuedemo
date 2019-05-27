@@ -1,7 +1,12 @@
 import { parseComponent } from "vue-template-compiler";
 
 
+<<<<<<< HEAD
 export function getcampus(that) {
+=======
+
+export function getcampus(that){
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
   fetch(`/api/campus`, {
     method: "GET"
   })
@@ -215,6 +220,7 @@ export function delmajor(e, that) {
 }
 
 
+<<<<<<< HEAD
 
 export function editmajor(refs, that) {
   const form = refs.editForm.form;
@@ -262,6 +268,40 @@ export function getdorm(that) {
     // console.log(that.dataSource);
   });
   fetch(`/api/admin/role`, {
+=======
+export function addcampus(refs,dataSource,that){
+    const form = refs.collectionForm.form;  // 创建form
+      form.validateFields((err, values) => {
+        if (err) {
+          return;
+        }
+        console.log('Received values of form: ', values);
+
+        // dataSource.push(values);  // 应该是fetch到的新数据 先以values为参数post请求，在请求成功后get新的数据
+        fetch(`/api/admin/education/campus?name=${values.name}`,{
+            method:'POST',
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "content-type": "application/json"
+            },
+            credentials: "include",
+            
+        }).then(res=>{
+            return res.json();
+        }).then(data=>{
+          getcampus(that);
+
+    }),
+        form.resetFields();
+        that.visible = false; //   控制对话框的状态
+      });
+}
+
+
+
+export function getmajor(that){
+  fetch(`/api/major`, {
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     method: "GET"
   })
     .then(res => {
@@ -519,15 +559,28 @@ export function getcamman(that) {
 }
 
 
+<<<<<<< HEAD
 export function addcamman(refs,that){
   const form = refs.collectionForm.form;
+=======
+export function addmajor(refs,that){
+    const form = refs.collectionForm.form;  // 创建form
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       form.validateFields((err, values) => {
         if (err) {
           return;
         }
+<<<<<<< HEAD
         console.log("Received values of form: ", values);
         // console.log(values.department.join(','));
        fetch(`/api/admin`,{
+=======
+        console.log('Received values of form: ', values);
+      //  dataSource.push(values);  // 应该是fetch到的新数据
+
+       fetch(`/api/admin/education/major`,{
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
          method:'POST',
          headers: {
             "Access-Control-Allow-Origin": "*",
@@ -576,13 +629,20 @@ export function editcamman(refs,that){
         //  this.getmanagers();
         getcamman(that);
        })
+
         form.resetFields();
         that.editvisible = false;
       });
 }
 
+<<<<<<< HEAD
 export function delcamman(e,that){
   fetch(`/api/admin/${e}`,{
+=======
+
+export function delmajor(e,that){
+  fetch(`/api/admin/education/major/${e}`,{
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     method:'DELETE'
   }).then(res=>{
     if(res.status===200){
@@ -629,9 +689,16 @@ export function getdorman(that) {
 }
 
 
+<<<<<<< HEAD
 export function adddorman(refs,that){
   const form = refs.collectionForm.form;
       form.validateFields((err, values) => {
+=======
+export function editcampus(refs,dataSource,e,that){
+    
+    const form = refs.editForm[e].form;
+    form.validateFields((err, values) => {
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
         if (err) {
           return;
         }
@@ -680,6 +747,7 @@ export function editdorman(refs,that){
             id:that.currentitem.id,
             roleIds:[values.dorm]
           })
+<<<<<<< HEAD
        }).then(res=>{
          return res.json()
        }).then(res=>{
@@ -689,6 +757,25 @@ export function editdorman(refs,that){
         form.resetFields();
         that.editvisible = false;
       });
+=======
+        that.editvisible=false;
+        console.log(that.datas);
+        });
+
+}
+
+
+export function getdorm(that){
+  fetch(`/api/dorm`,{
+    method:'GET'
+  }).then(res=>{
+    return res.json()
+  }).then(res=>{
+    
+    that.dataSource=res.content;
+    console.log(that.dataSource);
+  })
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
 }
 
 
@@ -701,4 +788,5 @@ export function deldorman(e,that){
     }
     return
   })
+
 }

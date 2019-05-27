@@ -67,7 +67,12 @@ export default {
   data(){
     return{
       SelectedKeys:[0],
+<<<<<<< HEAD
       department:'',
+=======
+
+      department:'建筑',
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       menu:['业务管理','注册管理'], // menu是资源得获取，在data初始化前
       operationselect:true,
       reselect:false,

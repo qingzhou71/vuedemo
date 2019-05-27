@@ -1,7 +1,9 @@
 <template>
   <div class="managers">
     <a-card class="managerscard">
+
       <signout class="admin-singnout"></signout>
+
       <a-button type="primary" class="addplus" @click="showModal">
         <a-icon type="plus"/>添加管理员
       </a-button>
@@ -41,9 +43,36 @@
   </div>
 </template>
 <script>
+
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
+<<<<<<< HEAD
+=======
+// const columns = [
+//   {
+//     title: "用户名",
+//     dataIndex: "name"
+//   },
+//   {
+//     title: "账号",
+//     dataIndex: "username"
+//   },
+//   {
+//     title: "密码",
+//     dataIndex: "password"
+//   },
+//   {
+//     title: "所属部门",
+//     dataIndex: "department"
+//   },
+//   {
+//     title: "操作",
+//     dataIndex: "del",
+//     scopedSlots: { customRender: "del" }
+//   }
+// ];
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
 
 const CollectionCreateForm = {
   props: ["visible", "resourcelist"],
@@ -152,6 +181,7 @@ const editForm = {
   `
 };
 export default {
+<<<<<<< HEAD
   components: { CollectionCreateForm, signout,editForm },
    data() {
     return {
@@ -186,6 +216,50 @@ export default {
       dataSource:[],
       currentde:[],
       currentid:''
+=======
+
+  components: { CollectionCreateForm, signout },
+   data() {
+    return {
+      visible: false,
+      resourcelist: [
+        { name: "学院办事处", id: "21" },
+        { name: "后勤处", id: "23" },
+        { name: "财务办", id: "67" }
+      ],
+      columns:[
+  {
+    title: "用户名",
+    dataIndex: "name"
+  },
+  {
+    title: "账号",
+    dataIndex: "username"
+  },
+  {
+    title: "密码",
+    dataIndex: "password"
+  },
+  {
+    title: "所属部门",
+    dataIndex: "department"
+  },
+  {
+    title: "操作",
+    dataIndex: "del",
+    scopedSlots: { customRender: "del" }
+  }
+],
+      dataSource:[{
+        password:'1234',
+        username:'23',
+        key:'1',
+        department:'123',
+        id:'1234'
+      }],
+      currentde:[]
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     };
   },
   beforeCreate() {
@@ -410,11 +484,21 @@ color: blue;
   height: 72%;
   overflow-y: scroll;
 }
+<<<<<<< HEAD
+=======
+.delete {
+  color: blue;
+}
+.delete:hover {
+  cursor: pointer;
+}
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
 
 .admin-singnout {
   position: absolute;
   top: 20px;
   right: 5px;
+
 }
 .resourceedit {
   position: absolute;

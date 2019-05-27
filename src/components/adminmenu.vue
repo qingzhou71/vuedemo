@@ -25,6 +25,7 @@
         <a-icon type="inbox"/>
         <span>人员管理</span>
       </a-menu-item>
+
     </a-menu>
   </div>
 </template>

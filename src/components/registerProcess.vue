@@ -1,4 +1,5 @@
 <template>
+
   <div class="process" :style='processstyle'>
     <span style='display:none'>{{msgs}}
     {{lat}}
@@ -20,11 +21,13 @@
           <a-button type='primary' @click='finish'>完成注册</a-button>
           </div>
           </div>
+
   </div>
 </template>
 
 
 <script >
+
 const campusdata = 
   {
     
@@ -40,16 +43,25 @@ export default {
       lat:1,
       lng:2,
       timer:'',
+<<<<<<< HEAD
       stuinfo:{},
       status:{},
       adminstatus:[],
       stustatus:[],
+=======
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       count:0,
       campusdata,
       processstyle:{
         height:window.screen.availHeight-146+'px'
+<<<<<<< HEAD
       },
       currentstep:{}
+=======
+      }
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     };
   },
   methods: {
@@ -57,7 +69,9 @@ export default {
       var _that=this;   //存储this的值，防止实例化内部拿不到需要的this
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
         center:[108.9,34.15],
+
         zoom: 13 
       });      
       // map是否能够提出在methods外
@@ -82,7 +96,9 @@ export default {
       console.log(lat,lng)
       let map = new AMap.Map("container", {
         resizeEnable: true, 
+
         center:[lng,lat],
+
         zoom: 13 //初始视窗
       });
       var walking = new AMap.Walking({
@@ -90,7 +106,13 @@ export default {
         panel: "panel"
     }); 
     //根据起终点坐标规划步行路线
+<<<<<<< HEAD
     walking.search([lng,lat], ['108.9008617401','34.153126515'], function(status, result) {
+=======
+
+    walking.search([108.8991665840,34.1499923318,108.8991665840], [108.9008617401,34.153126515], function(status, result) {
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
         if (status === 'complete') {
             log.success('绘制步行路线完成')
         } else {
@@ -226,6 +248,12 @@ export default {
   },
   mounted() {
      this.maps();
+<<<<<<< HEAD
+=======
+
+    //  document.documentElement.scrollTop=145;
+    //  console.log(document.documentElement.scrollTop);
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
     console.log(document.documentElement.clientHeight);
     //  setTimeout(()=>{
     //   //  document.documentElement.scrollTop=100;
@@ -233,7 +261,11 @@ export default {
     //    console.log('12345')
     //  },0);
     //  this.timer=setInterval(this.maps,10000);
+<<<<<<< HEAD
      //   定位刷新，控制地图不重载
+=======
+
+>>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
   },
   // beforeUpdate(){
   //   // this.navi();
@@ -243,6 +275,7 @@ export default {
 </script>
 <style>
 .process {
+
   /* height: 775px; */
   
   /* position: relative; */
@@ -260,12 +293,14 @@ margin-top: 15px;
   height: 90%;
   width: 100%;
    position: relative;
+
 }
 #panel {
   
   position: absolute;
   background-color: white;
   max-height: 90%;
+
   overflow-y: scroll;
   top: 0px;
   right: 0px;
@@ -318,6 +353,7 @@ margin-top: 15px;
 }
 .registtext{
   height: 30%;
+
 }
 </style>
 
