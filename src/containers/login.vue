@@ -10,6 +10,7 @@
       >
         <a-form-item class="login-form-item">
           <a-input
+          style="height:40px"
             v-decorator="[
 
           'username',
@@ -37,7 +38,7 @@
         <a-form-item style="margin-top:15px">
           <div style="display:flex">
             <a-input
-              style="margin-right:20px;width:52%"
+              style="margin-right:20px;width:52%;height:40px"
               v-decorator="[
           'imageCode',
           { rules: [{ required: true, message: '请输入验证码!' }] }
@@ -76,7 +77,7 @@ import constants from "@/components/constant.js";
 export default {
   beforeCreate() {
     this.form = this.$form.createForm(this);
-    fetch(`/api/campus`, {
+    fetch(`/api/location?size=50`, {
       method: "GET"
     })
       .then(res => {
@@ -97,7 +98,7 @@ export default {
       test: "i will",
       src: "/api/code/image",
       infosure: localStorage.getItem("info"),
-      constant: constants.constant
+      constant: constants.urllist
     };
   },
   methods: {
@@ -146,12 +147,25 @@ export default {
                     localStorage.setItem('identity',res.roles[0])
                   };
                   break;
-                default:
-                  if (this.infosure) {
-                    this.$router.push({ path: "/register" });
-                  } else {
-                    this.$router.push({ path: "/info" });
+                  case '学院管理处':
+                  case '专业管理处':
+                  case '宿舍管理处':
+                  case '流程管理处':
+                  case '建筑地标管理处':
+                  {
+                    this.$router.push({ path: "/managers" });
+                    localStorage.setItem('identity',res.roles[0])
                   }
+                  ;break;
+                  // case ''
+                default:
+                  // if (this.infosure) {
+                  //   this.$router.push({ path: "/register" });
+                  // } else {
+                  //   this.$router.push({ path: "/info" });
+                  // }
+                   this.$router.push({ path: "/campuses" });
+                    localStorage.setItem('identity',res.roles[0])
                   break;
               }
             })

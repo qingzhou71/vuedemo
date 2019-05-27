@@ -10,37 +10,68 @@
           </a-list-item>
         </a-list>-->
         <div v-for="(item,index) in campusdata" :key="index" class="pocesslist">
-          <h2>{{item.campusname}}</h2>
+          <h2>{{item.campus.name}}</h2>
           <span class="edit">
-            <a-icon type="edit" @click="()=>editprocess(item.process,index,item.campusname)"/>
+            <a-icon
+              type="edit"
+              @click="()=>editprocess(item.process,index,item.campus.name,item.campus.id)"
+            />
           </span>
-          <div v-if='!item.process.length' class='note'>暂时没有流程，去设置流程吧</div>
-          <div v-else class='processnote'>流程示意：</div>
-          <a-steps progressDot class='steps'  :current='item.process.length-1' labelPlacement='vertical'>
-            <a-step v-for='(items,index) in item.process' :key='index' :title="items.name" />
-            
+          <div v-if="!item.process.length" class="note">暂时没有流程，去设置流程吧</div>
+          <div v-else class="processnote">流程示意：</div>
+
+          <a-steps
+            progressDot
+            class="steps"
+            :current="item.process.length-1"
+            labelPlacement="vertical"
+          >
+            <a-step
+              v-for="(items,index) in item.process"
+              :key="index"
+              :title="items.location.name||'无'"
+            />
           </a-steps>
         </div>
       </div>
 
       <div v-show="edit" class="cover"></div>
       <div v-show="edit" class="editprocess">
-        <a-form :form="form" @submit="handleSubmit"  >
-          <a-form-item class='campusname'>{{currentcampusname}}:</a-form-item>
+        <a-form :form="form" @submit="handleSubmit">
+          <a-form-item class="campusname">{{currentcampusname}}:</a-form-item>
           <a-form-item
             v-for="(k, index) in steps"
             :key="index"
             v-bind="formItemLayoutWithOutLabel"
             class="stepinput"
-            :required="false"
-           
+            :required="true"
+            
           >
-            step{{index+1}}
+            <!-- step{{index+1}} -->
+            <div> step{{index+1}}:</div>
+            选择地点：
             <a-select
-            v-decorator="[
+              v-decorator="[
             `names[${index}]`,
             {
-              initialValue:k.name,
+              initialValue:k.location.name,
+              rules:[{
+                required:true,
+                
+                message:'内容不能为空，如不需要请删除此项'
+              }]
+            }
+            ]"
+            >
+              <a-select-option v-for="(item) in locations" :key="item.name">{{item.name}}</a-select-option>
+            </a-select>
+            <br/>
+            选择部门：
+            <a-select
+              v-decorator="[
+            `tags[${index}]`,
+            {
+              initialValue:k.tag||'',
               rules:[{
                 required:true,
                 whitespace: true,
@@ -49,14 +80,14 @@
             }
             ]"
             >
-            <a-select-option v-for='(item) in locations' :key='item.name'>{{item.name}}</a-select-option>
+              <a-select-option v-for="(item) in departments" :key="item">{{item}}</a-select-option>
             </a-select>
             <!-- <a-input
               v-decorator="[
-          `names[${index}]`,
+          `tags[${index}]`,
           {
             validateTrigger: ['change', 'blur'],
-            initialValue:k.name,
+            initialValue:k.tags||'',
             rules: [{
               required: true,
               whitespace: true,
@@ -67,7 +98,7 @@
               placeholder="填写地点"
               style="width: 60%; margin-right: 8px"
               
-            /> -->
+            />-->
             <a-icon
               v-if="index> 0"
               class="dynamic-delete-button"
@@ -82,6 +113,7 @@
           </a-form-item>
           <a-form-item class="submitbutton">
             <a-button type="primary" html-type="submit">确定</a-button>
+            <a-button @click="cancel">取消</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -94,48 +126,14 @@ import signout from "@/components/signout";
 let id = 3;
 const campusdata = [
   {
-    campusid: "10",
-    campusname: "通信与信息工程学院",
+    campus: {
+      id: 10,
+      name: "123456"
+    },
     process: [
-      { sep: 1, name: "学院办事处", key: 0 },
-      { sep: 2, name: "财务办", key: 1 },
-      { sep: 3, name: "宿舍管理处", key: 2 }
-    ]
-  },
-  {
-    campusid: "11",
-    campusname: "电子工程学院",
-    process: [
-      { sep: 1, name: "财务办", key: 0 },
-      { sep: 2, name: "学院办事处", key: 1 },
-      { sep: 3, name: "教务处", key: 2 },
-      { sep: 4, name: "宿舍管理处", key: 3 }
-    ]
-  },
-  {
-    campusid: "12",
-    campusname: "自动化学院",
-    process: [
-      { sep: 1, name: "财务处", key处: 0 },
-      { sep: 2, name: "学院办事处", key: 1 },
-      { sep: 3, name: "宿舍管理处", key: 2 },
-      { sep: 4, name: "武装部", key: 3 }
-    ]
-  },
-  {
-    campusid: "13",
-    campusname: "人文社科学院",
-    process: [
-      { sep: 1, name: "学院办事处", key: 0 },
-      { sep: 2, name: "财务处", key: 1 },
-      { sep: 3, name: "宿舍管理处", key: 2 }
-    ]
-  },
-  {
-    campusid: "14",
-    campusname: "计算机学院",
-    process: [
-      
+      // { sep: 1, name: "学院办事处", key: 0,tags:'通信与信息管理学院' },
+      // { sep: 2, name: "财务办", key: 1,tags:'财务部' },
+      // { sep: 3, name: "宿舍管理处", key: 2,tags:'后勤管理处' }
     ]
   }
 ];
@@ -143,12 +141,15 @@ export default {
   data() {
     return {
       campusdata: campusdata,
-      currentcampusname:'',
-      currentindex:0,
+      currentcampusname: "",
+      currrentid: 0,
+      currentindex: 0,
+      currentstep: [],
+      count:0,
       steps: [
-        { sep: 1, name: "as", key: 0 },
-        { sep: 2, name: "qw", key: 1 },
-        { sep: 3, name: "zx", key: 2 }
+        // { sep: 1, name: "as", key: 0 },
+        // { sep: 2, name: "qw", key: 1 },
+        // { sep: 3, name: "zx", key: 2 }
       ],
       edit: false,
       formItemLayoutWithOutLabel: {
@@ -157,31 +158,43 @@ export default {
           sm: { span: 20, offset: 4 }
         }
       },
-      locations:[
-        {
-          name:'通信与信息管理学院',
-          id:'12'
-        },
-        {
-          name:'财务部',
-          id:'12'
-        },
-        {
-          name:'后勤管理处',
-          id:'12'
-        },
-        {
-          name:'宿舍管理处',
-          id:'12'
-        }
-      ]
+      locations: [],
+      departments: ["学院管理处", "宿舍管理处", "财务处", "组织关系管理处"]
     };
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
+
+    fetch(`/api/admin/education/report`, {
+      method: "GET"
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        
+        this.campusdata = res;
+        
+      });
+    
+    fetch(`/api/location`, {
+      method: "GET"
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        console.log(res);
+        this.locations = res.content;
+      });
   },
-  components:{signout},
+  components: { signout },
   methods: {
+    cancel() {
+      this.edit = false;
+      this.form.resetFields();
+      this.steps = [];
+    },
     remove(k) {
       const { form } = this;
 
@@ -189,56 +202,147 @@ export default {
         return;
       }
 
-      console.log(k);
+     
       this.steps.splice(k, 1);
-      console.log(this.steps);
-      // this.form.resetFields();
+     this.count++;
     },
 
     add() {
       const { form } = this;
       const len = this.steps.length;
       console.log(len);
-      this.steps.push({ sep: len + 1, name: "", key: len });
+      this.steps.push({
+        sep: len + 1,
+        key: len,
+        tag: "",
+        location: { name: "" }
+      });
     },
 
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log("Received values of form: ", values);
-          console.log(values.names[1]);
-
-          this.steps.map((item, index) => {
-            item.sep = index + 1;
-            item.name = values.names[index];
-            item.key = index + 1;
-          });
-           console.log(this.steps[0].name);
-        // console.log(this.steps[3].name);
-        console.log(this.currentindex)
-        this.campusdata.process=this.steps;
-        this.edit = false;
-        this.form.resetFields();
+        if (err) {
+          return;
         }
-       
+
+        console.log("Received values of form: ", values);
+        if(this.count>0){
+          console.log('delete')
+          console.log(this.currentstep)
+          this.currentstep.map(item=>{
+            console.log(item.id)
+          })
+        }
+        else{
+          console.log('post+put')
+        }
+
+        // values.names.map((item, index) => {
+        //   const currentlocation=this.locations.filter(
+        //           items => items.name === item
+        //         )[0]
+        //   if (this.currentstep.length > index) {
+        //     console.log("put");
+        //     fetch(`/api/admin/education/report?campus.id=${this.currrentid}&location.id=${currentlocation.id}&id=${this.currentstep[index].id}&seq=${index+1}&tag=${values.tags[index]}`,{
+        //       method:'PUT'
+        //     }).then(res=>{
+        //       return res.json()
+        //     }).then(res=>{
+        //        fetch(`/api/admin/education/report`, {
+        //           method: "GET"
+        //         })
+        //           .then(res => {
+        //             return res.json();
+        //           })
+        //           .then(res => {
+                    
+        //             this.campusdata = res;
+                    
+        //           });
+        //     })
+        //   } else {
+        //     console.log("post");
+        //     fetch(`/api/admin/education/report`, {
+        //       method: "POST",
+        //       headers: {
+        //         "Access-Control-Allow-Origin": "*",
+        //         "content-type": "application/json"
+        //       },
+        //       credentials: "include",
+        //       body: JSON.stringify({
+        //         campus: {
+        //           id: this.currrentid,
+        //           name: "any"
+        //         },
+        //         location: currentlocation,
+        //         seq: index + 1,
+        //         tag: values.tags[index]
+        //       })
+        //     })
+        //       .then(res => {
+        //         return res.json();
+        //       })
+        //       .then(res => {
+        //         console.log(res);
+        //         fetch(`/api/admin/education/report`, {
+        //           method: "GET"
+        //         })
+        //           .then(res => {
+        //             return res.json();
+        //           })
+        //           .then(res => {
+                   
+        //             this.campusdata = res;
+                    
+        //           });
+        //       });
+        //   }
+          
+        // });
+
+        this.edit = false;
+        this.steps=[];
+        this.form.resetFields();
       });
-      
     },
-    editprocess(step,index,campusname) {
-        this.currentindex=index;
-        this.currentcampusname=campusname;
-        this.steps=step;
-        console.log(this.steps);
-        this.edit=true;
+    editprocess(step, index, campusname, campusid) {
+      this.currentindex = index;
+      this.currentcampusname = campusname;
+      this.currrentid = campusid;
+      this.steps = this.steps.concat(step);
+      this.currentstep = step;
+      // console.log(this.currentstep.length);
+      // console.log(step);
+      // console.log(this.steps);
+      // console.log(this.campusdata);
+
+      // console.log(this.steps[0].location)
+      this.edit = true;
+     
     }
+  },
+  watch: {
+    // campusdata(){
+    //   this.campusdata=this.campusdata;
+    // //    fetch(`/api/admin/education/report`,{
+    // //   method:'GET'
+    // // }).then(res=>{
+    // //   return res.json()
+    // // }).then(res=>{
+    // //   // console.log(res);
+    // //   this.campusdata=res;
+    // //   // this.steps=res.process;
+    // //   // console.log(this.campusdata)
+    // // })
+    // }
   }
 };
 </script>
 <style>
 .process {
   width: 100%;
-  height: 100%;
+  height: 90%;
   /* position: relative; */
 }
 .processcard {
@@ -250,6 +354,9 @@ export default {
   z-index: 1;
   overflow: auto;
   padding: 10px 20px;
+}
+.processcard .ant-card-body{
+  height: 100%;
 }
 .dynamic-delete-button {
   cursor: pointer;
@@ -273,8 +380,8 @@ export default {
   width: 60%;
   height: auto;
   position: absolute;
-  top: 150px;
-  right: 20%;
+  top: 120px;
+  right: 27%;
   /* margin: 150px auto; */
   border: 1px solid silver;
   padding: 20px 0;
@@ -282,6 +389,8 @@ export default {
   max-width: 500px;
   z-index: 13;
   background: white;
+  max-height: 70%;
+  overflow-y: scroll
 }
 .submitbutton {
   width: 60%;
@@ -301,26 +410,26 @@ export default {
   /* font-size: 25px; */
   margin: 20px;
 }
-.pocesslist{
-    width: 90%;
+.pocesslist {
+  width: 90%;
   border-bottom: 1px solid silver;
   position: relative;
   margin: 40px 30px;
 }
-.steps{
-    padding: 10px;
-    width:70%;
-    text-align: left;
-    /* margin-left: -20px; */
+.steps {
+  padding: 10px;
+  width: 70%;
+  text-align: left;
+  /* margin-left: -20px; */
 }
-.note{
-    font-size: 18px;
-    padding: 10px;
+.note {
+  font-size: 18px;
+  padding: 10px;
 }
-.processnote{
-    /* position: absolute; */
-    font-size: 16px;
-    top:20px;
+.processnote {
+  /* position: absolute; */
+  font-size: 16px;
+  top: 20px;
 }
 .edit {
   position: absolute;
@@ -329,10 +438,10 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
-.edit:hover{
+.edit:hover {
   color: blue;
 }
-.campusname{
+.campusname {
   font-size: 16px;
   margin-left: 20px;
 }
@@ -341,8 +450,17 @@ export default {
   top: 20px;
   right: 5px;
 }
-.editprocess form .ant-select, form .ant-cascader-picker{
+.editprocess form .ant-select,
+form .ant-cascader-picker {
   width: 55%;
-  margin-right: 30px
+  margin-right: 30px;
+}
+.editprocess .ant-form-item{
+  margin-bottom: 4px !important;
+}
+.listboard{
+  height: 85%;
+  overflow-y: scroll;
+  border: 1px solid silver;
 }
 </style>

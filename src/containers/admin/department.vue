@@ -24,19 +24,29 @@
               <a-icon type="delete"/>
             </span>
           </a-popconfirm>
-          <span class="resourceedit" >
+          <span class="resourceedit"  @click='showedit(item.name,item.resource,item.id)'>
             <a-icon type="edit"/>
           </span>
 
           <div>所属资源：{{item.resource}}</div>
         </div>
+        <editForm
+            ref="editForm"
+            :visible="editvisible"
+            :list="currentlist"
+            :name='currentname'
+            @cancel="handleCancel"
+            @create="handleedit"
+            :resourcelist="resourcelist"
+          />
       </div>
     </a-card>
   </div>
 </template>
 <script>
 
-import signout from '@/components/signout'
+import signout from '@/components/signout';
+import {newdepart} from '@/components/constant.js';
 
 require("es6-promise").polyfill();
 require('isomorphic-fetch');
@@ -77,11 +87,11 @@ const CollectionCreateForm = {
         </a-form-item>
         <a-form-item label='请选择对应资源'>
           <a-select
-          
+           mode='multiple'
             v-decorator="[
               'resource',
               {
-                rules: [{ required: true, message: '资源不能为空!' }],
+                
               }
             ]"
           >
@@ -100,10 +110,46 @@ const CollectionCreateForm = {
   `,
 };
 
+
+const editForm = {
+  props: ['visible','resourcelist','list','name'],
+  beforeCreate () {
+    this.form = this.$form.createForm(this);
+  },
+  template: `
+    <a-modal
+      :visible="visible"
+      title='修改部门'
+      okText='确认'
+      cancelText='取消'
+      @cancel="() => { $emit('cancel') }"
+      @ok="() => { $emit('create') }"
+    >
+      <a-form layout='vertical' :form="form">
+        
+        <a-form-item label='请选择对应资源'>
+          <a-select
+           mode='multiple'
+            v-decorator="[
+              'resource',
+              {
+               
+              }
+            ]"
+          >
+          <a-select-option v-for='(item,index) in resourcelist' :key='item.id'>{{item.name}}</a-select-option>
+          </a-select>
+        </a-form-item>
+      
+        
+      </a-form>
+    </a-modal>
+  `,
+};
+// const newdepart='1234'
 export default {
-
-  components: { CollectionCreateForm,signout },
-
+  // newdepart,
+  components: { CollectionCreateForm,signout, editForm},
   beforeCreate(){
       // get请求进行数据的初始化，资源，角色，以及数据的处理（数据的处理好像很麻烦）
       fetch(`/api/admin/resource`, {
@@ -127,25 +173,31 @@ export default {
               })
               .then(data => {
                 // console.log(data, "5432");
-                data.map((item,index)=>{
+                data.sort((a,b)=>{
+                      return a.id-b.id;
+                });
+                // console.log(data);
+                data.map((item,index)=>{   //因为data是乱序的，所以有资源角色错位的情况
                   this.dataSource[index]=item;
-                  // console.log(item.id)
+                  //  console.log(item.id)
                   fetch(`/api/admin/role/${item.id}/resource`,{
                     method:'GET'
                   }).then(res=>{
                     return res.json()
                   }).then(res=>{
-                    // console.log(res);
+                    //  console.log(res);
                     // this.dataSource[index].resource=res;
                      if(res.length===0){
                        this.dataSource[index].resource='暂无资源';
                     }
                     else{
-                      // console.log(res[0])
-                      // console.log(this.resourcelist)
-                      // console.log(this.resourcelist.filter(item=>item.id==res[0]));
-                      // console.log(this.resourcelist.filter(item=>item.id==res[0])[0].name);
-                      this.dataSource[index].resource=this.resourcelist.filter(item=>item.id==res[0])[0].name;
+                      const datalist=[];
+                      res.map((items,index)=>{
+                        datalist[index]=this.resourcelist.filter(item=>item.id==res[index])[0].name
+                      })
+                      // console.log(datalist);
+                      this.dataSource[index].resource=datalist.join(',');
+                      // this.dataSource[index].resource=this.resourcelist.filter(item=>item.id==res[0])[0].name;
                     }
                     
                     this.dataSource.sort((a,b)=>{
@@ -164,15 +216,19 @@ export default {
     return {
       dataSource:[],
       visible: false,
-      resourcelist:[]
+      editvisible:false,
+      resourcelist:[],
+      currentname:'',
+      currentlist:[],
+      currentid:''
     };
   },
   methods: {
     confirm(e) {
         // 删除操作，在这里发起del请求和get请求来刷新列表
-      console.log(this.dataSource);
+      // console.log(this.dataSource);
       this.dataSource.splice(this.dataSource.length-1,1);
-      console.log(e);
+      // console.log(e);
       // dataSource.splice(e,1);
       fetch(`/api/admin/role/${e}`,{
         method:'DELETE'
@@ -183,20 +239,30 @@ export default {
         return;
       });
     },
+    showedit(name,list,id){
+      this.editvisible=true;
+      this.currentname=name;
+      
+       this.currentlist=list.split(',');
+      this.currentid=id;
+    },
     getrole(){
        fetch(`/api/admin/role`, {
               method: "GET"
             })
               .then(res => {
-                console.log(res);
+                // console.log(res);
                 return res.json();
               })
               .then(data => {
-                console.log(data, "5432");
+                // console.log(data, "5432");
+                data.sort((a,b)=>{
+                      return a.id-b.id;
+                });
                 data.map((item,index)=>{
-                  console.log(this.dataSource);
+                  // console.log(this.dataSource);
                   this.dataSource[index]=item;
-                  console.log(item.id)
+                  // console.log(item.id)
                   fetch(`/api/admin/role/${item.id}/resource`,{
                     method:'GET'
                   }).then(res=>{
@@ -208,15 +274,18 @@ export default {
                        this.dataSource[index].resource='暂无数据';
                     }
                     else{
-                      // console.log(this.resourcelist.filter(item=>item.id===res[0]));
-                      this.dataSource[index].resource=this.resourcelist.filter(item=>item.id==res[0])[0].name;
+                      const datalist=[];
+                      res.map((items,index)=>{
+                        datalist[index]=this.resourcelist.filter(item=>item.id==res[index])[0].name
+                      })
+                      this.dataSource[index].resource=datalist.join(',');
+                      // console.log(datalist);
+                      // this.dataSource[index].resource=this.resourcelist.filter(item=>item.id==res[0])[0].name;
                     }
                     
-                    console.log(this.dataSource);
                     this.dataSource.sort((a,b)=>{
                       return a.id-b.id;
                     });
-
                   })
                 })
               });
@@ -234,6 +303,7 @@ export default {
           return;
         }
         console.log('Received values of form: ', values);
+        //  newdepart=values.name;
         // console.log(values.resource.join(','));
         // params.name=values.name;
         // params.resource=values.resource.join(',');
@@ -251,7 +321,16 @@ export default {
         }).then(res=>{
           return res.json()
         }).then(res=>{
-          console.log(res);
+          // console.log(res);
+           console.log(values.resource);
+           
+
+
+          if(values.resource===undefined){
+            this.getrole();
+            return
+          }
+          else{
           fetch(`/api/admin/role/${res.id}/resource?ids=${values.resource}`,{
             method:'POST',
             headers: {
@@ -260,11 +339,13 @@ export default {
           },
           credentials: "include",
           }).then(res=>{
+            console.log(res)
             if(res.status===200){
               this.getrole();
             }
             return;
           })
+          }
           
         })
 
@@ -278,6 +359,58 @@ export default {
     handleCancel(e) {
       console.log("Clicked cancel button");
       this.visible = false;
+      this.editvisible=false;
+    },
+    handleedit(){
+       const form = this.$refs.editForm.form; 
+       form.validateFields((err,values)=>{
+         if(err){
+           return;
+         }
+         console.log('formvalues:',values);
+         this.editvisible=false;
+
+        //  fetch(`/api/admin/role/${this.currentid}`,{
+        //    method:'PUT',
+        //    headers: {
+        //     "Access-Control-Allow-Origin": "*",
+        //     "content-type": "application/json"
+        //   },
+        //   body: JSON.stringify({
+        //     name: values.edit,
+        //     id: this.currentid
+        //   })
+        //  }).then(res=>{
+        //    return res.json()
+        //  }).then(res=>{
+        //    console.log(res);
+            if(values.resource===undefined){
+            this.getrole();
+            return
+          }
+          else{
+            console.log(values.resource);
+          fetch(`/api/admin/role/${this.currentid}/resource?ids=${values.resource}`,{
+            method:'POST',
+            headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          credentials: "include",
+          }).then(res=>{
+            console.log(res)
+            if(res.status===200){
+              this.getrole();
+            }
+            return;
+          })
+          }
+        //  })
+       })
+       form.resetFields();
+
+      
+
     }
   }};
 </script>
@@ -320,6 +453,9 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+.resourcelist span:hover{
+color: blue;
+}
 .resourcelist div {
   padding: 10px;
   font-size: 17px;
@@ -337,4 +473,11 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+.admin-singnout {
+  position: absolute;
+  top: 20px;
+  right: 5px;
+}
 </style>
+
+

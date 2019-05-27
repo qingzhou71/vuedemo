@@ -9,31 +9,36 @@
       <collection-create-form
         ref="collectionForm"
         :visible="visible"
+        :urllist='urllist'
         @cancel="handleCancel"
         @create="handleCreate"
       />
       <h1>资源详情：</h1>
       <div class="listboard">
-        <div v-for="(item,index) in dataSource" :key="item.name" class="resourcelist">
+        <div v-for="(item) in dataSource" :key="item.name" class="resourcelist">
           <h2>{{item.name}}</h2>
           <a-popconfirm title="确定要删除此资源么？" okText="确认" cancelText="取消" @confirm="confirm(item.id)">
             <span>
               <a-icon type="delete"/>
             </span>
           </a-popconfirm>
-          <span class="resourceedit" @click="showedit(index,item.id)">
+          <span class="resourceedit" @click="showedit(item.urls,item.id,item.name)">
             <a-icon type="edit"/>
           </span>
 
-          <editForm
+          
+          <div>{{item.mark}}</div>
+        </div>
+        <editForm
             ref="editForm"
             :visible="editvisible"
-            :datdid="item.id"
+            :datdid="currentid"
+            :name='currentname'
+            :urllist='urllist'
+            :currenturl='currentth'
             @cancel="handleCancel"
             @create="handleedit"
           />
-          <div>{{item.mark}}</div>
-        </div>
       </div>
     </a-card>
   </div>
@@ -41,11 +46,12 @@
 
 <script>
 import signout from "@/components/signout";
+import constant from '@/components/constant.js';
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
 const CollectionCreateForm = {
-  props: ["visible"],
+  props: ["visible",'urllist'],
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
@@ -69,11 +75,18 @@ const CollectionCreateForm = {
             ]"
           />
         </a-form-item>
-        <a-form-item label='备注'>
-          <a-input
-            type='textarea'
-            v-decorator="['mark']"
-          />
+        <a-form-item label='添加url权限'>
+           <a-select
+           mode='multiple'
+            v-decorator="[
+              'urls',
+              {
+               rules: [{ required: true, message: '不能为空!' }],
+              }
+            ]"
+          >
+          <a-select-option v-for='(item) in urllist' :key='item'>{{item}}</a-select-option>
+          </a-select>
         </a-form-item>
         
       </a-form>
@@ -82,7 +95,7 @@ const CollectionCreateForm = {
 };
 
 const editForm = {
-  props: ["visible", "dataid"],
+  props: ["visible", "dataid",'name','urllist','currenturl'],
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
@@ -101,11 +114,25 @@ const editForm = {
             v-decorator="[
               'edit',
               {
-                
+                initialValue:name,
                 rules: [{ required: true, message: '名称不能为空!' }],
               }
             ]"
           />
+        </a-form-item>
+        <a-form-item label='更改url权限'>
+           <a-select
+           mode='multiple'
+            v-decorator="[
+              'urls',
+              {
+              initialValue:currenturl,
+               rules: [{ required: true, message: '不能为空!' }],
+              }
+            ]"
+          >
+          <a-select-option v-for='(item) in urllist' :key='item'>{{item}}</a-select-option>
+          </a-select>
         </a-form-item>
         
       </a-form>
@@ -120,12 +147,16 @@ export default {
       dataSource: [],
       visible: false,
       editvisible: false,
-      currentth: "",
-      currentid: ""
+      currentth: [],
+      currentid: "",
+      currentname:'',
+      urllist:constant.urllist,
     };
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
+    // console.log(urllist);
+    // console.log(newdepart);
     if (localStorage.getItem("identity") !== "超级管理员") {
       this.$router.push({ path: "/" });
     }
@@ -157,11 +188,13 @@ export default {
     },
     showModal() {
       this.visible = true;
+      console.log(this.urllist);
     },
-    showedit(e, id) {
+    showedit(urls, id,name) {
       this.editvisible = true;
-      this.currentth = e;
+      this.currentth = urls;
       this.currentid = id;
+      this.currentname=name;
       console.log(this.currentid);
     },
     getresource() {
@@ -199,7 +232,8 @@ export default {
           credentials: "include",
 
           body: JSON.stringify({
-            name: values.name
+            name: values.name,
+            urls:values.urls
           })
         })
           .then(res => {
@@ -207,17 +241,7 @@ export default {
           })
           .then(data => {
             console.log(data, "2");
-            // fetch(`/api/admin/resource`, {
-            //   method: "GET"
-            // })
-            //   .then(res => {
-            //     console.log(res);
-            //     return res.json();
-            //   })
-            //   .then(data => {
-            //     console.log(data, "5432");
-            //     this.dataSource = data.children;
-            //   });
+            
            this. getresource();
           })
           .catch(err => {
@@ -231,10 +255,10 @@ export default {
       this.editvisible = false;
     },
     handleedit(e) {
-      console.log(this.$refs); //有八个editForm，需要位置来判断具体生成的表单form
-      console.log(this.$refs.editForm[this.currentth]);
+      
+      // console.log(this.$refs.editForm[this.currentth]);
 
-      const form = this.$refs.editForm[this.currentth].form; //同一位置二次更改会出现问题
+      const form = this.$refs.editForm.form; 
 
       form.validateFields((err, values) => {
         if (err) {
@@ -251,7 +275,8 @@ export default {
           },
           body: JSON.stringify({
             name: values.edit,
-            id: this.currentid
+            id: this.currentid,
+            urls:values.urls
           })
         }).then(res => {
           if (res.status === 200) {
@@ -259,7 +284,11 @@ export default {
           }
           return;
         });
+        form.resetFields();
       });
+          // this.form = this.$form.createForm(this);
+          console.log('12');
+
     }
   }
 };
@@ -328,10 +357,6 @@ export default {
   top: 20px;
   right: 5px;
 }
-.admin-singnout {
-  position: absolute;
-  top: 20px;
-  right: 5px;
-}
+
 
 </style>

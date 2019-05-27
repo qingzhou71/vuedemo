@@ -15,25 +15,27 @@
       />
       <h1>管理员列表：</h1>
       <div class="listboard">
-        <a-table :columns="columns" :dataSource="dataSource" bordered>
-          
-          <template slot="del" slot-scope="text, record">
-            <a-popconfirm
-              title="确定要删除此人员么？"
-              v-if="dataSource.length"
-              okText="确认"
-              cancelText="取消"
-              @confirm="() => confirm(record.key)"
-            >
-              <a class="delete">删除</a>
-            </a-popconfirm>
-          </template>
-        </a-table>
-        <!-- <table>
-          <tr>
-            <th v-for='(item,index) in columns' :key='index'>{{item.title}}</th>
-          </tr>
-        </table> -->
+        <div v-for="(item) in dataSource" :key="item.id" class="resourcelist">
+          <h2>用户名：{{item.username}}</h2>
+          <a-popconfirm title="确定要删除此管理员么？" okText="确认" cancelText="取消" @confirm="confirm(item.id)">
+            <span>
+              <a-icon type="delete"/>
+            </span>
+          </a-popconfirm>
+          <span class="resourceedit" @click="showedit(item.id,item.username)">
+            <a-icon type="edit"/>
+          </span>
+
+          <div>所属部门：{{item.depart}}</div>
+        </div>
+        <editForm
+            ref="editForm"
+            :visible="editvisible"
+            :username='currentusername'
+            @cancel="handleCancel"
+            @create="handleedit"
+            :resourcelist="resourcelist"
+          />
       </div>
     </a-card>
   </div>
@@ -42,29 +44,7 @@
 import signout from "@/components/signout";
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
-// const columns = [
-//   {
-//     title: "用户名",
-//     dataIndex: "name"
-//   },
-//   {
-//     title: "账号",
-//     dataIndex: "username"
-//   },
-//   {
-//     title: "密码",
-//     dataIndex: "password"
-//   },
-//   {
-//     title: "所属部门",
-//     dataIndex: "department"
-//   },
-//   {
-//     title: "操作",
-//     dataIndex: "del",
-//     scopedSlots: { customRender: "del" }
-//   }
-// ];
+
 const CollectionCreateForm = {
   props: ["visible", "resourcelist"],
   beforeCreate() {
@@ -80,16 +60,6 @@ const CollectionCreateForm = {
       @ok="() => { $emit('create') }"
     >
       <a-form layout='vertical' :form="form">
-        <a-form-item label='姓名'>
-          <a-input
-            v-decorator="[
-              'name',
-              {
-                rules: [{ required: true, message: '姓名不能为空!' }],
-              }
-            ]"
-          />
-        </a-form-item>
          <a-form-item label='账号'>
           <a-input
             v-decorator="[
@@ -112,7 +82,7 @@ const CollectionCreateForm = {
         </a-form-item>
         <a-form-item label='请选择所属部门'>
           <a-select
-          mode="multiple"
+          
             v-decorator="[
               'department',
               {
@@ -125,59 +95,97 @@ const CollectionCreateForm = {
 
           </a-select>
         </a-form-item>
-        <a-form-item label='备注'>
-          <a-input
-            type='textarea'
-            v-decorator="['mark']"
-          />
-        </a-form-item>
+        
         
       </a-form>
     </a-modal>
   `
 };
 
+
+const editForm = {
+  props: ["visible", "resourcelist",'username'],
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+  },
+  template: `
+    <a-modal
+      :visible="visible"
+      title='修改管理员信息'
+      okText='确认'
+      cancelText='取消'
+      @cancel="() => { $emit('cancel') }"
+      @ok="() => { $emit('create') }"
+    >
+      <a-form layout='vertical' :form="form">
+          <a-form-item label='账号'>
+          <a-input
+            v-decorator="[
+              'username',
+              {
+                initialValue:username,
+                rules: [{ required: true, message: '账号不能为空!' }],
+              }
+            ]"
+          />
+        </a-form-item>
+        
+        <a-form-item label='请选择所属部门'>
+          <a-select
+          
+            v-decorator="[
+              'department',
+              {
+                rules: [{ required: true, message: '部门不能为空!' }],
+              }
+            ]"
+          >
+
+          <a-select-option v-for='(item,index) in resourcelist' :key='item.id'>{{item.name}}</a-select-option>
+
+          </a-select>
+        </a-form-item>
+        
+        
+      </a-form>
+    </a-modal>
+  `
+};
 export default {
-  components: { CollectionCreateForm, signout },
+  components: { CollectionCreateForm, signout,editForm },
    data() {
     return {
       visible: false,
-      resourcelist: [
-        { name: "学院办事处", id: "21" },
-        { name: "后勤处", id: "23" },
-        { name: "财务办", id: "67" }
-      ],
-      columns:[
-  {
-    title: "用户名",
-    dataIndex: "name"
-  },
-  {
-    title: "账号",
-    dataIndex: "username"
-  },
-  {
-    title: "密码",
-    dataIndex: "password"
-  },
-  {
-    title: "所属部门",
-    dataIndex: "department"
-  },
-  {
-    title: "操作",
-    dataIndex: "del",
-    scopedSlots: { customRender: "del" }
-  }
-],
-      dataSource:[{
-        password:'1234',
-        username:'23',
-        key:'1',
-        department:'123',
-        id:'1234'
-      }],
-      currentde:[]
+      resourcelist: [],
+      editvisible:false,
+      currentusername:'',
+
+//       columns:[
+//   {
+//     title: "用户名",
+//     dataIndex: "name"
+//   },
+//   {
+//     title: "账号",
+//     dataIndex: "username"
+//   },
+//   {
+//     title: "密码",
+//     dataIndex: "password"
+//   },
+//   {
+//     title: "所属部门",
+//     dataIndex: "depart"
+//   },
+//   {
+//     title: "操作",
+//     dataIndex: "del",
+//     scopedSlots: { customRender: "del" }
+//   }
+// ],
+      dataSource:[],
+      currentde:[],
+      currentid:''
     };
   },
   beforeCreate() {
@@ -201,42 +209,25 @@ export default {
         }
       })
       .then(res => {
-      //  this.dataSource=res.content;
-      console.log(res);
-      // this.dataSource=res.content;
-      const datalist=[];
-       res.content.map((item,index) => {
-          datalist[index]=item;
-          datalist[index].key=index;
-          const roleid=item.roleIds[0];
-          this.currentde=[];
-          // var test='';
-         fetch(`/api/admin/role/${roleid}`, {
-            method: "GET"
-          }).then(res => {
-            if (res.status === 200) {
-              return res.json();
-            } else {
-              return;
-            }
-          }).then(res=>{
-          // datalist[index].department=res.name;
-           console.log(res)
-          //  console.log(this);
-           this.currentde=res;
-           datalist[index].depart=this.currentde.name;
-           this.dataSource=datalist;
-           
-           console.log(this.dataSource);
-          })
-
-          
-        });
-        // console.log(datalist);
-        // this.dataSource=datalist;
-        // console.log(this.dataSource)
-
-        
+      res.content.sort((a,b)=>{
+                      return a.id-b.id;
+                });
+      res.content.map((item,index)=>{
+        this.dataSource[index]=item;
+        fetch(`/api/admin/role/${item.roleIds[0]}`,{
+          method:'GET'
+        }).then(res=>{
+          return res.json()
+        }).then(res=>{
+          console.log(res);
+          this.dataSource[index].depart=res.name;
+          this.dataSource.sort((a,b)=>{
+                      return a.id-b.id;
+                    });
+          console.log(this.dataSource);
+        })
+      })
+      
       });
      
   },
@@ -244,9 +235,58 @@ export default {
   methods: {
     confirm(key) {
       // 删除操作，在这里发起del请求和get请求来刷新列表
-      this.datas = this.datas.filter(item => item.key !== key);
+      // this.datas = this.datas.filter(item => item.key !== key);
+      console.log(key);
+      this.dataSource.splice(this.dataSource.length-1,1);
+      fetch(`/api/admin/${key}`,{
+        method:'DELETE'
+      }).then(res=>{
+        if(res.status===200){
+          this.getmanagers()
+        }
+        return
+      })
     },
-
+    showedit(id,username){
+      this.currentid=id;
+      this.editvisible=true;
+      this.currentusername=username;
+    },
+    getmanagers(){
+      fetch(`/api/admin`, {
+      method: "GET"
+    })
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return;
+        }
+      })
+      .then(res => {
+      //  this.dataSource=res.content;
+      res.content.sort((a,b)=>{
+                      return a.id-b.id;
+                });
+      console.log(res);
+       res.content.map((item,index)=>{
+        this.dataSource[index]=item;
+        fetch(`/api/admin/role/${item.roleIds[0]}`,{
+          method:'GET'
+        }).then(res=>{
+          return res.json()
+        }).then(res=>{
+          console.log(res);
+          this.dataSource[index].depart=res.name;
+          this.dataSource.sort((a,b)=>{
+                      return a.id-b.id;
+                    });
+          console.log(this.dataSource);
+        })
+      })
+      
+      });
+    },
     showModal() {
       this.visible = true;
       console.log(this.dataSource)
@@ -260,14 +300,24 @@ export default {
           return;
         }
         console.log("Received values of form: ", values);
-        console.log(values.department.join(","));
-        params.name = values.name;
-        params.username = values.username;
-        params.password = values.password;
-        params.department = values.department.join(",");
-        params.key = values.username;
-        console.log(params);
-        this.datas.push(params);
+        // console.log(values.department.join(','));
+       fetch(`/api/admin`,{
+         method:'POST',
+         headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            username: values.username,
+            password:values.password,
+            roleIds:[values.department]
+          })
+       }).then(res=>{
+         return res.json()
+       }).then(res=>{
+         this.getmanagers();
+       })
         form.resetFields();
         this.visible = false;
       });
@@ -275,6 +325,35 @@ export default {
     handleCancel(e) {
       console.log("Clicked cancel button");
       this.visible = false;
+      this.editvisible=false;
+    },
+    handleedit(){
+      this.editvisible=false;
+       const form = this.$refs.editForm.form; 
+       form.validateFields((err,values)=>{
+         if(err){
+           return;
+         }
+         console.log('formvalues: ',values);
+          this.editvisible=false;
+          fetch(`/api/admin`,{
+            method:'PUT',
+            headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({
+            username: values.username,
+            id: this.currentid,
+            roleIds:[values.department]
+          })
+          }).then(res=>{
+            return res.json()
+          }).then(res=>{
+            this.getmanagers();
+          })
+       })
+       form.resetFields();
     }
   }
 };
@@ -292,6 +371,9 @@ export default {
 
   position: relative;
 
+}
+.managerscard .ant-card-body{
+  height: 100%;
 }
 .addplus {
   margin: 20px;
@@ -315,6 +397,9 @@ export default {
   font-size: 18px;
   cursor: pointer;
 }
+.resourcelist span:hover{
+color: blue;
+}
 .resourcelist div {
   padding: 10px;
   font-size: 17px;
@@ -325,16 +410,21 @@ export default {
   height: 72%;
   overflow-y: scroll;
 }
-.delete {
-  color: blue;
-}
-.delete:hover {
-  cursor: pointer;
-}
+
 .admin-singnout {
   position: absolute;
   top: 20px;
   right: 5px;
+}
+.resourceedit {
+  position: absolute;
+  top: 10px;
+  right: 60px !important;
+  font-size: 18px;
+  cursor: pointer;
+}
+.resourceedit:hover{
+  color: blue;
 }
 
 </style>
