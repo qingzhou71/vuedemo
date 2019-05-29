@@ -15,7 +15,7 @@
               <!-- 这里的option应该是根据后台数组或者对象利用v-for渲染出来的，后续会改进 -->
               <a-select-option value="2018">2018</a-select-option>
               <a-select-option value="2017">2017</a-select-option>
-              <a-select-option value="2016">1016</a-select-option>
+              <a-select-option value="2016">2016</a-select-option>
               <a-select-option value="2015">2015</a-select-option>
             </a-select>
           </a-col>
@@ -97,7 +97,7 @@ export default {
   beforeCreate() {},
   beforeMount() {
     console.log(this.year);
-    fetch(`/api/mock/stu/score/03151285`, {
+    fetch(`/mock/stu/score/03151285`, {
       method: "GET"
     })
       .then(res => {
@@ -135,7 +135,7 @@ export default {
     searchsubmit() {
       // 以保存的查询条件来请求数据，或许不在这里，但方法是这样的，获取到后将数据存入data 变量中，以props传到scroelist组件，watch监测
       //数据变化，动态渲染列表。
-       fetch(`/api/mock/stu/score/03151285`, {
+       fetch(`/mock/stu/score/03151285`, {
       method: "GET"
     })
       .then(res => {

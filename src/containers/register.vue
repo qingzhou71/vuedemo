@@ -18,11 +18,10 @@
             <span>这里是注册流程的注意事项哦</span>
             <a-icon type="pushpin"/>
             <ul class="tips-ul">
-              <li>1.这里是文字</li>
-              <li>2.这里是也是文字</li>
-              <li>3.这里还是文字</li>
-              <li>4.这里依旧是文字,但是字数要多一点，因为我想要看效果</li>
-              <li>5.这里仍然是文字</li>
+              <li>1.欢迎小萌新来西柚报道</li>
+              <li>2.跟着我们的步骤去注册，要紧跟每一句提示语</li>
+              <li>3.每一项注册流程都需要管理员和学生双方确认才能完成</li>
+              
             </ul>
             <a-button class="forsure" type="primary" @click="start">知道了，去报道！</a-button>
           </div>
@@ -47,12 +46,15 @@
         <a-icon type="appstore"/>个人中心
       </a-menu-item>
     </a-menu>
+    <bottom class='bottom'></bottom>
   </div>
 </template>
 <script>
 import sidemenu from "@/components/sidemenu";
 import registerProcess from "@/components/registerProcess";
 import xupt from "@/components/xupt";
+import personal from '@/components/personal'
+import bottom from '@/components/bottom'
 export default {
   name: "test",
   data() {
@@ -67,14 +69,14 @@ export default {
     };
   },
 
-  components: { sidemenu, registerProcess, xupt },
+  components: { sidemenu, registerProcess, xupt,personal,bottom },
   beforeCreate() {
-    // if(localStorage.getItem('identity')!=='新生'){
-    //   console.log('123456');
-    //   this.$router.push({path:'/'});
-    // }else{
-    //   console.log('qwertyu');
-    // }
+    if(localStorage.getItem('identity')!=='stu'){
+      console.log('123456');
+      this.$router.push({path:'/'});
+    }else{
+      console.log('qwertyu');
+    }
     fetch(`/api/stu/me`, {
       method: "GET"
     })
@@ -90,7 +92,7 @@ export default {
         fetch(`/api/stu/reporting`, {
           method: "GET"
         }).then(res => {
-          if (res.status === 200) {
+          if (res.status === 200) {   //422已注册
             return res.json();
           } else if (res.status === 500) {
             fetch(`/api/stu/reporting`, {
@@ -227,6 +229,10 @@ export default {
 }
 @media screen and (min-width) {
 
+}
+.bottom{
+  padding: 10px 0;
+  margin-bottom: 40px;
 }
 </style>
 

@@ -2,21 +2,28 @@
   <div class="center">
     <div class="layout-top">
       学生个人中心
-      <!-- <signout class='per-singnout'></signout> -->
       </div>
     <div class='centermenu'>
       <sidemenu class='sidemenu'></sidemenu>
 
     <!-- 将个人中心作为组件提取出来 -->
 
-   <div class="ce"><p>为了看出来这个页面到底是什么东西：   个人中心</p></div>
+   <div class="ce">
+     <a-card class='person'>
+       <div class='persondiv'>
+     <personal ></personal>
+       </div>
+     </a-card>
+   </div>
+   <bottom class="centerbottom"></bottom>
     </div>
   </div>
 </template>
 
 <script>
 import sidemenu from '@/components/sidemenu';
-
+import personal from '@/components/personal';
+import bottom from '@/components/bottom';
 export default {
   name: 'center',
   data () {
@@ -26,7 +33,7 @@ export default {
       num:5
     }
   },
-  components:{sidemenu},
+  components:{sidemenu,personal,bottom},
   methods : {
       addnum :function(){
           this.num++;
@@ -40,11 +47,12 @@ export default {
 .center{
   background-color:  rgb(248, 248, 248);
   /* position: relative; */
-  height: 800px;
+  height: 100%;
   width: 100%;
 }
 .centermenu{
 position: relative;
+height:85%;
 }
 .sidemenu{
   position: fixed;
@@ -82,5 +90,19 @@ position: relative;
   .score-card{
     flex: 1;
   }
+  .person{
+  min-height: 570px;
+  padding: 10px 40px;
+}
+.persondiv{
+  width: 450px;
+}
+}
+.person{
+  min-height: 570px;
+}
+.centerbottom{
+  height: 5%;
+  margin-top: 20px;
 }
 </style>

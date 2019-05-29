@@ -4,13 +4,11 @@
       
       <li :class="{performanceli:perShow}" @click="performance">成绩查询</li>
       <a-divider></a-divider>
-      <li :class="{introductionli:naShow}" @click="introduction">校园导航</li>
-      <a-divider></a-divider>
-      <li :class="{centerli:grShow}" @click="center">离校管理</li>
+      <li :class="{centerli:grShow}" @click="graduate">离校管理</li>
       <a-divider></a-divider>
       <li :class="{introductionli:naShow}" @click="introduction">校园介绍</li>
       <a-divider></a-divider>
-      <li :class="{centerli:grShow}" @click="center">个人中心</li>
+      <li :class="{centerli:ceShow}" @click="center">个人中心</li>
       <a-divider></a-divider>
       
     </ul>
@@ -35,7 +33,8 @@ export default {
       },
       naShow: location.hash.slice(2) === "introduction" ? true : false,
       perShow: location.hash.slice(2) === "performance" ? true : false,
-      grShow: location.hash.slice(2) === "center" ? true : false
+      ceShow: location.hash.slice(2) === "center" ? true : false,
+      grShow: location.hash.slice(2) === "graduate" ? true : false
     };
   },
   methods: {
@@ -52,6 +51,9 @@ export default {
     },
     center() {
       this.$router.push({ path: "/center" });
+    },
+    graduate(){
+      this.$router.push({path:'/graduate'});
     }
   }
 };

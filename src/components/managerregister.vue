@@ -20,16 +20,16 @@
           @click="registered"
         >注册</a-button>
         <a-button v-else type="primary" class="rebutton" size="large" disabled>注册</a-button>
-        
       </div>
       <a-table class="usertable" :columns="columns" :dataSource="datas" bordered></a-table>
     </a-card>
+    <bottom class='manbottom'></bottom>
   </div>
 </template>
 
 <script>
 import signout from "@/components/signout";
-
+import bottom from "@/components/bottom";
 const basecolumns = [
   {
     title: "学号",
@@ -94,6 +94,7 @@ const fincolumns = [
 const datas = [];
 
 export default {
+  props: ["tagsname"],
   data() {
     return {
       columns: basecolumns,
@@ -101,14 +102,14 @@ export default {
       searchdata: {},
       department: "",
       campusid: 0,
-      tagsname: "学院管理处", // 应该是组件的传参值
+      tagsname: this.tagsname, // 应该是组件的传参值
       selfseq: 0,
       campusdata: [],
-      status:[],
-      stustatus:[],
-      adminstatus:[],
-      register:true,
-      statusid:0
+      status: [],
+      stustatus: [],
+      adminstatus: [],
+      register: true,
+      statusid: 0
     };
   },
   beforeCreate() {
@@ -140,12 +141,15 @@ export default {
           })
           .then(res => {
             this.campusdata = res.content;
+            console.log(res.content);
+            // console.log(this.department)
             if (this.department.slice(-2) === "学院") {
               this.campusid = res.content.filter(
                 item => item.name === this.department
               )[0].id;
-
-              fetch(`/api//admin/stu/campus/${this.campusid}`, {
+              // console.log()
+              console.log(this.campusid);
+              fetch(`/api/admin/stu/campus/${this.campusid}`, {
                 method: "GET"
               })
                 .then(res => {
@@ -212,28 +216,29 @@ export default {
                     item.key = index;
                   });
                 });
-              fetch(`/api/reporting/${this.campusid}`, {
-                method: "GET"
-              })
-                .then(res => {
-                  return res.json();
-                })
-                .then(res => {
-                  console.log(res);
-                  res.process.map(item => {
-                    if (item.tag === this.tagsname) {
-                      this.selfseq = item.seq;
-                    }
-                  });
-                });
+              // fetch(`/api/reporting/${this.campusid}`, {
+              //   method: "GET"
+              // })
+              //   .then(res => {
+              //     return res.json();
+              //   })
+              //   .then(res => {
+              //     console.log(res);
+              //     res.process.map(item => {
+              //       if (item.tag === this.tagsname) {
+              //         this.selfseq = item.seq;
+              //       }
+              //     });
+              //   });
             }
           });
       });
   },
-  components: { signout },
+  components: { signout, bottom },
   methods: {
     onSearch(value) {
       this.searchdata = this.datas.filter(item => item.username === value)[0];
+      console.log(this.datas.filter(item => item.username === value))
       this.campusid = this.campusdata.filter(
         item => item.name === this.searchdata.campusname
       )[0].id;
@@ -251,53 +256,73 @@ export default {
               this.selfseq = item.seq;
             }
           });
-         fetch(`/api/admin/stu/reporting/${this.searchdata.username}`,{
-           method:"GET"
-         }).then(res=>{
-           if(res.status===200){
-           return res.json()
-           }
-           else if(res.status===500){
-             alert('该学生没有报道流程')
-             this.register=false;
-             return 
-           }
-         }).then(res=>{
-           console.log(res)
-           if(res.adminStatus===''){
-            //  this.register=true;
-            if(this.selfseq!==1){
-              this.register=false;
-              alert('学生尚未完成上一步注册')
-            }
-            else{
-              this.register=true;
-              this.statusid=res.id;
-            }
-           }
-           else{
-             this.stustatus=res.stuStatus.split('，');
-           this.adminstatus=res.adminStatus.split('，');
-           this.statusid=res.id;
-           console.log(res.stuStatus)
-           console.log(this.stustatus)
-          //  console.log(this.status[this.status.length-1])
-           if(this.selfseq-1==this.stustatus[this.stustatus.length-1]||res.stuStatus===''){
-             if(this.selfseq-1==this.adminstatus[this.adminstatus.length-1]){
-               this.register=true;
-             }
-             else{
-               this.register=false;
-               alert('该流程已在管理员处注册')
-             }
-           }
-           else{
-             this.register=false;
-             alert('学生尚未完成上一步注册')
-           }
-           }
-           
-         })
+          fetch(`/api/admin/stu/reporting/${this.searchdata.username}`, {
+            method: "GET"
+          })
+            .then(res => {
+              if (res.status === 200) {
+                return res.json();
+              } else if (res.status === 404) {
+                alert("该学生没有报道流程");
+                this.register = false;
+                return;
+              }
+            })
+            .then(res => {
+              console.log(res);
+              if (res.adminStatus === "") {
+                this.adminstatus=[]
+                //  this.register=true;
+                // 判断用户admin状态是否是初始状态，若为初始状态，判断当前管理员是否是流程中的第一步
+                //如果是第一步则进行注册，不是则提示用户错误，
+                if (this.selfseq !== 1) {
+                  this.register = false;
+                  alert("学生尚未完成上一步注册");
+                } else {
+                  this.register = true;
+                  this.statusid = res.id;
+                }
+              } else {
+                // 如果状态不是初始状态，则判断stu状态是否前一步骤的状态，如果是，判断admin状态
+                //admin状态如果与前一步骤一样，则进行注册，如果不一样，则表示admin状态已更新，不进行注册
+               
+                this.adminstatus = res.adminStatus.split("，");
+                this.statusid = res.id;
+                console.log(res.stuStatus);
+                console.log(this.stustatus);
+                if(res.stuStatus === ""){
+                  this.stustatus=[]
+                }else{
+                   this.stustatus = res.stuStatus.split("，");
+                }
+                //  console.log(this.status[this.status.length-1])
+                if (
+                  this.selfseq - 1 ==
+                    this.stustatus[this.stustatus.length - 1] ||
+                  res.stuStatus === ""
+                ) {
+                  if (
+                    this.selfseq - 1 ==
+                    this.adminstatus[this.adminstatus.length - 1]
+                  ) {
+                    this.register = true;
+                  } else {
+                    this.register = false;
+                    alert("该流程已在管理员处注册");
+                  }
+                } else {
+                  //如果stu状态不是前一步骤的状态，判断大小，前一步骤大于stu状态则表示用户上一步还未注册，小于则表示用户注册了上一项
+                  //因为不存在等于的情况，所以表示用户至少已经注册了当前此项。
+                  this.register = false;
+                  if(this.selfseq - 1> this.stustatus[this.stustatus.length - 1]*1){
+                  alert("学生尚未完成上一步注册");
+                  }
+                  else{
+                    alert('该学生已完成该项注册')
+                  }
+                }
+              }
+            });
         });
     },
 
@@ -305,35 +330,56 @@ export default {
       console.log(this.searchdata.username);
       this.register = false;
       // this.searchdata.adminStatus=this.status.push(this.selfseq).join(',');
-      this.adminstatus.push(this.selfseq)
-      console.log(this.adminstatus.join(','))
+      this.adminstatus.push(this.selfseq);
+      console.log(this.adminstatus.join(","));
       // console.log(this.searchdata.stuStatus)
-      if(this.stustatus.length===0){
-        this.stustatus=''
-        console.log('123456')
+      if (this.stustatus.length === 0) {
+        this.stustatus = "";
+        console.log("123456");
+      } else {
+        this.stustatus = this.stustatus.join(",");
       }
-      else{
-        this.stustatus=this.stustatus.join(',')
-      }
-      console.log(this.stustatus)
+      console.log(this.stustatus);
       // 根据学号put更改学生信息，then get信息，
-      fetch(`/api/stu/reporting`,{
-        method:'PUT',
-         headers: {
-        "Access-Control-Allow-Origin": "*",
-        "content-type": "application/json"
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        adminStatus:this.adminstatus.join(','),
-        id:this.statusid,
-        stuStatus:this.stustatus,
-        finish:false,
-        username:this.searchdata.username
-      })
-      }).then(res=>{
-        return 
-      })
+      fetch(`/api/stu/reporting`, {
+        method: "PUT",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "content-type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          adminStatus: this.adminstatus.join(","),
+          id: this.statusid,
+          stuStatus: this.stustatus,
+          finish: false,
+          username: this.searchdata.username
+        })
+      }).then(res => {
+        return;
+      });
+      if (this.department === "卡务中心") {
+        fetch(`/api/stu/card`, {
+          method: "POST",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            balance: 0,
+            cancel: false,
+            username: this.searchdata.username
+          })
+        }).then(res=>{
+          return
+        })
+      }
+    }
+  },
+  watch: {
+    tagsname() {
+      console.log(this.tagsname);
     }
   }
 };
@@ -347,8 +393,12 @@ export default {
   width: 98%;
   margin: 0 auto;
   max-width: unset;
-  height: 100%;
+  height: 90%;
   position: relative;
+}
+.maregistercard .ant-card-body{
+  height:90%;
+  overflow-y: scroll;
 }
 .searchuser {
   width: 50%;
@@ -382,5 +432,9 @@ export default {
   position: absolute;
   top: 20px;
   right: 5px;
+}
+.manbottom{
+   height: 5%;
+  margin-top: 20px;
 }
 </style>

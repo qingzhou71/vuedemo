@@ -69,6 +69,7 @@
           <a class="login-form-forgot" href>忘记密码</a>
           <a-button type="primary" html-type="submit" class="login-form-button" size="large">登录</a-button>
         </a-form-item>
+        <span class='tonavi' @click="tonavigate">进入校园导航</span>
       </a-form>
     </a-card>
   </div>
@@ -81,6 +82,7 @@ import constants from "@/components/constant.js";
 export default {
   beforeCreate() {
     this.form = this.$form.createForm(this);
+    localStorage.removeItem('identity');
     fetch(`/api/location?size=50`, {
       method: "GET"
     })
@@ -106,10 +108,14 @@ export default {
     };
   },
   methods: {
+    tonavigate(){
+      this.$router.push({path:'/navigate'})
+    },
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
+        
           console.log(this.constant);
           // console.log(`http://${this.constant}/authentication/form`)
           console.log("Received values of form: ", values); // 拿到values，通过Ajax来调用接口，传参values
@@ -136,14 +142,18 @@ export default {
               if (res.username === undefined) {
                 //根据返回值的格式判断正常数据或错误提示
                 console.log(res.content);
+                 this.src = this.src + "?";
                 if (res.content === "用户名或密码错误") {
                   console.log("去另一服务器验证身份");
+                  this.$router.push({ path: "/info" });
+                  localStorage.setItem('username',values.username);
                 } else {
                   alert(res.content);
                 }
                 return;
               }
               console.log(res.username); //返回值正常则进入身份判断
+              console.log(res.roles[0])
               switch (res.roles[0]) {
                 case "超级管理员":
                   {
@@ -154,20 +164,45 @@ export default {
                   case '学院管理处':
                   case '专业管理处':
                   case '宿舍管理处':
-                  case '流程管理处':
-                  case '建筑地标管理处':
+                  case '建筑地标管理':
                   {
                     this.$router.push({ path: "/managers" });
                     localStorage.setItem('identity',res.roles[0])
                   }
                   ;break;
-                  // case ''
+                  case '流程管理':{
+                    this.$router.push({ path: "/process" });
+                    localStorage.setItem('identity',res.roles[0])
+                  };break;
+                  case '财务处':
+                  // case '卡务中心':  
+                  // case '组织关系管理处':
+                    {
+                    this.$router.push({ path: "/guanli" });
+                    localStorage.setItem('identity',res.roles[0])
+                  };break;
+                  case '科技立项管理处':{
+                     this.$router.push({ path: "/kejiguanli" });
+                    localStorage.setItem('identity',res.roles[0])
+                  };break;
+                  case '保卫处':{
+                     this.$router.push({ path: "/baoweichu" });
+                    localStorage.setItem('identity',res.roles[0])
+                  };break;
+                  case '就业指导中心':{
+                    this.$router.push({ path: "/jobguanli" });
+                    localStorage.setItem('identity',res.roles[0])
+                  };break;
+                  case 'stu':
+                    {
+                      console.log(res.roles[0])
+                    this.$router.push({ path: "/register" });
+                   localStorage.setItem('identity',res.roles[0]);
+                   localStorage.setItem('username',res.username);
+                    };
+                    break;
                 default:
-                  // if (this.infosure) {
-                  //   this.$router.push({ path: "/register" });
-                  // } else {
-                  //   this.$router.push({ path: "/info" });
-                  // }
+                   console.log(res.roles[0])
                    this.$router.push({ path: "/campuses" });
                     localStorage.setItem('identity',res.roles[0])
                   break;
@@ -177,6 +212,9 @@ export default {
               console.log(err);
             });
           //  then里拿到返回的身份认证，存入localstorage，在每个页面的挂载前验证身份，做以权限
+        }
+        else{
+           this.src = this.src + "?";
         }
       });
     },
@@ -217,7 +255,7 @@ export default {
   border: none;
   width: 80%;
   height: 500px;
-  margin: 0 auto;
+  margin: 0 auto !important;
   max-width: 400px;
   background: rgb(255, 255, 255, 0.65);
 }
@@ -251,6 +289,12 @@ export default {
   font-size: 29px;
   width: 100%;
   text-align: center;
+}
+.tonavi{
+  color: blue;
+}
+.tonavi:hover{
+  cursor: pointer;
 }
 </style>
 

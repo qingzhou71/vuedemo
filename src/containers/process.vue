@@ -4,11 +4,7 @@
       <signout class="manager-singnout"></signout>
       <h1 class="title">流程管理:</h1>
       <div class="listboard">
-        <!-- <a-list itemLayout="horizontal" :dataSource="campusdata">
-          <a-list-item slot="renderItem" slot-scope="item, index">
-              {{item.campusname}}{{index}}
-          </a-list-item>
-        </a-list>-->
+      
         <div v-for="(item,index) in campusdata" :key="index" class="pocesslist">
           <h2>{{item.campus.name}}</h2>
           <span class="edit">
@@ -45,11 +41,9 @@
             v-bind="formItemLayoutWithOutLabel"
             class="stepinput"
             :required="true"
-            
           >
             <!-- step{{index+1}} -->
-            <div> step{{index+1}}:</div>
-            选择地点：
+            <div>step{{index+1}}:</div>选择地点：
             <a-select
               v-decorator="[
             `names[${index}]`,
@@ -65,8 +59,7 @@
             >
               <a-select-option v-for="(item) in locations" :key="item.name">{{item.name}}</a-select-option>
             </a-select>
-            <br/>
-            选择部门：
+            <br>选择部门：
             <a-select
               v-decorator="[
             `tags[${index}]`,
@@ -82,23 +75,7 @@
             >
               <a-select-option v-for="(item) in departments" :key="item">{{item}}</a-select-option>
             </a-select>
-            <!-- <a-input
-              v-decorator="[
-          `tags[${index}]`,
-          {
-            validateTrigger: ['change', 'blur'],
-            initialValue:k.tags||'',
-            rules: [{
-              required: true,
-              whitespace: true,
-              message: '内容不能为空，如不需要请删除此项',
-            }],
-          }
-        ]"
-              placeholder="填写地点"
-              style="width: 60%; margin-right: 8px"
-              
-            />-->
+           
             <a-icon
               v-if="index> 0"
               class="dynamic-delete-button"
@@ -118,11 +95,13 @@
         </a-form>
       </div>
     </a-card>
+    <bottom class='processbottom'></bottom>
   </div>
 </template>
 
 <script>
 import signout from "@/components/signout";
+import bottom from '@/components/bottom'
 let id = 3;
 const campusdata = [
   {
@@ -145,7 +124,7 @@ export default {
       currrentid: 0,
       currentindex: 0,
       currentstep: [],
-      count:0,
+      count: 0,
       steps: [
         // { sep: 1, name: "as", key: 0 },
         // { sep: 2, name: "qw", key: 1 },
@@ -159,12 +138,14 @@ export default {
         }
       },
       locations: [],
-      departments: ["学院管理处", "宿舍管理处", "财务处", "组织关系管理处"]
+      departments: ["学院管理处", "宿舍管理处", "财务处", "组织关系管理处","卡务中心"]
     };
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
-
+    if(localStorage.getItem('identity')!=='流程管理'){
+      this.$router.push({path:'/'})
+    }
     fetch(`/api/admin/education/report`, {
       method: "GET"
     })
@@ -172,11 +153,9 @@ export default {
         return res.json();
       })
       .then(res => {
-        
         this.campusdata = res;
-        
       });
-    
+
     fetch(`/api/location`, {
       method: "GET"
     })
@@ -188,7 +167,7 @@ export default {
         this.locations = res.content;
       });
   },
-  components: { signout },
+  components: { signout,bottom },
   methods: {
     cancel() {
       this.edit = false;
@@ -202,9 +181,8 @@ export default {
         return;
       }
 
-     
       this.steps.splice(k, 1);
-     this.count++;
+      this.count++;
     },
 
     add() {
@@ -227,83 +205,141 @@ export default {
         }
 
         console.log("Received values of form: ", values);
-        if(this.count>0){
-          console.log('delete')
-          console.log(this.currentstep)
-          this.currentstep.map(item=>{
-            console.log(item.id)
-          })
+        if (this.count > 0) {
+          console.log("delete");
+          console.log(this.currentstep);
+          this.currentstep.map(item => {
+            console.log(item.id);
+            // 删除所有的数据
+            fetch(`/api/admin/education/report/${item.id}`, {
+              method: "DELETE"
+            }).then(res => {
+              
+              return;
+            });
+            values.names.map((item, index) => {
+              const currentlocation = this.locations.filter(
+                items => items.name === item
+              )[0];
+              fetch(`/api/admin/education/report`, {
+                method: "POST",
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  "content-type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                  campus: {
+                    id: this.currrentid,
+                    name: "any"
+                  },
+                  location: currentlocation,
+                  seq: index + 1,
+                  tag: values.tags[index]
+                })
+              })
+                .then(res => {
+                  return res.json();
+                })
+                .then(res => {
+                  console.log(res);
+                  fetch(`/api/admin/education/report`, {
+                    method: "GET"
+                  })
+                    .then(res => {
+                      return res.json();
+                    })
+                    .then(res => {
+                      this.campusdata = res;
+                    });
+                });
+            });
+          });
+        } else {
+          console.log("post+put");
+          values.names.map((item, index) => {
+            const currentlocation = this.locations.filter(
+              items => items.name === item
+            )[0];
+            if (this.currentstep.length > index) {
+              console.log("put");
+              fetch(
+                `/api/admin/education/report`,
+                {
+                  method: "PUT",
+                  headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  "content-type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                  campus: {
+                    id: this.currrentid,
+                    name: "any"
+                  },
+                  location: currentlocation,
+                  id:this.currentstep[index].id,
+                  seq: index + 1,
+                  tag: values.tags[index]
+                })
+                }
+              )
+                .then(res => {
+                  return res.json();
+                })
+                .then(res => {
+                  fetch(`/api/admin/education/report`, {
+                    method: "GET"
+                  })
+                    .then(res => {
+                      return res.json();
+                    })
+                    .then(res => {
+                      this.campusdata = res;
+                    });
+                });
+            } else {
+              console.log("post");
+              fetch(`/api/admin/education/report`, {
+                method: "POST",
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  "content-type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                  campus: {
+                    id: this.currrentid,
+                    name: "any"
+                  },
+                  location: currentlocation,
+                  seq: index + 1,
+                  tag: values.tags[index]
+                })
+              })
+                .then(res => {
+                  return res.json();
+                })
+                .then(res => {
+                  console.log(res);
+                  fetch(`/api/admin/education/report`, {
+                    method: "GET"
+                  })
+                    .then(res => {
+                      return res.json();
+                    })
+                    .then(res => {
+                      this.campusdata = res;
+                    });
+                });
+            }
+          });
         }
-        else{
-          console.log('post+put')
-        }
-
-        // values.names.map((item, index) => {
-        //   const currentlocation=this.locations.filter(
-        //           items => items.name === item
-        //         )[0]
-        //   if (this.currentstep.length > index) {
-        //     console.log("put");
-        //     fetch(`/api/admin/education/report?campus.id=${this.currrentid}&location.id=${currentlocation.id}&id=${this.currentstep[index].id}&seq=${index+1}&tag=${values.tags[index]}`,{
-        //       method:'PUT'
-        //     }).then(res=>{
-        //       return res.json()
-        //     }).then(res=>{
-        //        fetch(`/api/admin/education/report`, {
-        //           method: "GET"
-        //         })
-        //           .then(res => {
-        //             return res.json();
-        //           })
-        //           .then(res => {
-                    
-        //             this.campusdata = res;
-                    
-        //           });
-        //     })
-        //   } else {
-        //     console.log("post");
-        //     fetch(`/api/admin/education/report`, {
-        //       method: "POST",
-        //       headers: {
-        //         "Access-Control-Allow-Origin": "*",
-        //         "content-type": "application/json"
-        //       },
-        //       credentials: "include",
-        //       body: JSON.stringify({
-        //         campus: {
-        //           id: this.currrentid,
-        //           name: "any"
-        //         },
-        //         location: currentlocation,
-        //         seq: index + 1,
-        //         tag: values.tags[index]
-        //       })
-        //     })
-        //       .then(res => {
-        //         return res.json();
-        //       })
-        //       .then(res => {
-        //         console.log(res);
-        //         fetch(`/api/admin/education/report`, {
-        //           method: "GET"
-        //         })
-        //           .then(res => {
-        //             return res.json();
-        //           })
-        //           .then(res => {
-                   
-        //             this.campusdata = res;
-                    
-        //           });
-        //       });
-        //   }
-          
-        // });
 
         this.edit = false;
-        this.steps=[];
+        this.steps = [];
         this.form.resetFields();
+        this.count = 0;
       });
     },
     editprocess(step, index, campusname, campusid) {
@@ -319,7 +355,6 @@ export default {
 
       // console.log(this.steps[0].location)
       this.edit = true;
-     
     }
   },
   watch: {
@@ -342,20 +377,20 @@ export default {
 <style>
 .process {
   width: 100%;
-  height: 90%;
+  height: 100%;
   /* position: relative; */
 }
 .processcard {
   width: 98%;
   margin: 0 auto;
   max-width: unset;
-  height: 100%;
+  height: 90%;
   position: relative;
   z-index: 1;
   overflow: auto;
   padding: 10px 20px;
 }
-.processcard .ant-card-body{
+.processcard .ant-card-body {
   height: 100%;
 }
 .dynamic-delete-button {
@@ -390,7 +425,7 @@ export default {
   z-index: 13;
   background: white;
   max-height: 70%;
-  overflow-y: scroll
+  overflow-y: scroll;
 }
 .submitbutton {
   width: 60%;
@@ -455,12 +490,16 @@ form .ant-cascader-picker {
   width: 55%;
   margin-right: 30px;
 }
-.editprocess .ant-form-item{
+.editprocess .ant-form-item {
   margin-bottom: 4px !important;
 }
-.listboard{
+.listboard {
   height: 85%;
   overflow-y: scroll;
   border: 1px solid silver;
+}
+.processbottom{
+  height: 5%;
+  margin-top: 20px;
 }
 </style>

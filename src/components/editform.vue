@@ -146,25 +146,20 @@ export default {
       // console.log(this.recorddata,65);
        this.datas=this.recorddata;
       //  console.log(this.datas.name);
-<<<<<<< HEAD
           // this.defaultname=this.recorddata.name;
           // console.log(this.defaultname,678);
           
     },
-    
-=======
-          this.defaultname=this.recorddata.name;
-
-          // console.log(this.defaultname,678);
-          
-    },
-    editindex(){
-      // console.log(this.editindex);
-      this.index=this.editindex;
-      // console.log(this.editindex);
-
+    department(){
+        
+          this.title='修改'+this.department+'信息';
+          this.labelname='修改'+this.department+'名称';
+          this.campusselect=this.department==='专业'?true:false;
+          this. locationselect=this.department==='建筑'?true:false;
+          this. cammanselect=this.department==='学院管理员'?true:false;
+           this.dormselect=this.department === "宿舍管理员" ? true : false;
     }
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
+    
   }
 }
 </script>

@@ -25,7 +25,7 @@
                'male',
                {
                     rules: [{ required: true }],
-                    initialValue:infos.male
+                    initialValue:infos.sex
                 }
              ]"
           />
@@ -50,7 +50,7 @@
                'campus',
                {
                     rules: [{ required: true }],
-                    initialValue:infos.campus
+                    initialValue:infos.campus.name
                 }
              ]"
           />
@@ -63,7 +63,7 @@
                'major',
                {
                     rules: [{ required: true }],
-                    initialValue:infos.major
+                    initialValue:infos.majorName
                 }
              ]"
           />
@@ -76,7 +76,7 @@
                'dormitory',
                {
                     rules: [{ required: true }],
-                    initialValue:infos.dormitory
+                    initialValue:infos.dormitoryName
                 }
              ]"
           />
@@ -102,7 +102,7 @@
                'political',
                {
                     rules: [{ required: true }],
-                    initialValue:infos.political
+                    initialValue:infos.politicalName
                 }
              ]"
           />
@@ -119,7 +119,7 @@
 <script>
 const infos = {
   name: "轻舟",
-  male: "女",
+  sex: "女",
   campus: "计算机学院",
   major: "软件工程",
   dormRoom: "333",
@@ -129,17 +129,26 @@ const infos = {
 };
 export default {
   beforeCreate() {
-      if(localStorage.getItem('info')){
-          this.$router.push({ path: "/register" });
-      }
+      // if(localStorage.getItem('info')){
+      //     this.$router.push({ path: "/register" });
+      // }
     this.form = this.$form.createForm(this);
-    fecth(`/api/mock/stu/{username}`,{
+    var username=localStorage.getItem('username')
+    fetch(`/mock/stu/${username}`,{
       method:'GET'
     }).then(res=>{
+      console.log(res)
+      if(res.status===200){
+        console.log(res)
       return res.json()
+      }
+      else{
+        this.$router.push({path:'/'})
+      }
     }).then(res=>{
       console.log(res)
       this.infos=res;
+      this.infos.sex=res.male?'男':'女'
 
     })
   },
@@ -148,7 +157,8 @@ export default {
   },
   data() {
     return {
-      infos: infos
+      infos: infos,
+      username:localStorage.getItem('username')
     };
   },
   methods:{
@@ -156,10 +166,30 @@ export default {
            this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          localStorage.setItem('info','sure');
-          console.log(localStorage.getItem('info'));
-          this.$router.push({ path: "/" });
+          // localStorage.setItem('info','sure');
+          // console.log(localStorage.getItem('info'));
+         
           // post请求，创建新的学生
+          fetch(`/api/stu`,{
+            method:"POST",
+             headers: {
+            "Access-Control-Allow-Origin": "*",
+            "content-type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(this.infos)
+          }).then(res=>{
+            if(res.status===200){
+               return res.json()
+            }
+           else{
+             alert('注册失败啦，一会再试吧！')
+           }
+          }).then(res=>{
+            console.log(res)
+            alert('注册成功了');
+             this.$router.push({ path: "/" });
+          })
         }
            });
       }

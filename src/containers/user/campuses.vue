@@ -15,7 +15,7 @@
 
     <!-- <process v-if='process'></process> -->
     <operation v-if='process' department='专业'></operation>
-    <register v-else></register>
+    <register v-else :tagsname='tagsname'></register>
   </div>
 </template>
 <script>
@@ -27,12 +27,15 @@ export default {
   components: { register,operation },
   data(){
       return {
-        process:true
+        process:true,
+        tagsname:'学院管理处'
       }
   },
   beforeCreate(){
     if(localStorage.getItem('identity').slice(-2)!=='学院'){
-      console.log('去宿舍注册管理')
+      // alert('去宿舍注册管理')
+      this.$router.push({path:'/both'});
+      console.log(localStorage.getItem('identity'))
     }
   },
   methods:{

@@ -7,9 +7,14 @@
     v-if='menushow'
     >
     </managermenu>
-    <operation v-if='operationselect' :department='department'/>
+    <div v-if='operationselect' class='opelse'>
+    <operation  :department='department'/>
+    <bottom class='operbottom'></bottom>
+    </div>
+    
     <div v-else class='opelse'>
         <operation  :department='deman'/>
+        <bottom class='operbottom'></bottom>
     </div>
     
   </div>
@@ -19,6 +24,7 @@
 import managermenu from "@/components/managermenu";
 import operation from '@/components/operation';
 import maregister from '@/components/managerregister';
+import bottom from '@/components/bottom'
 // import process from '@/components/process';
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
@@ -26,7 +32,7 @@ require("isomorphic-fetch");
 export default {
 
   name: "admin",
-  components: { managermenu,operation,maregister },
+  components: { managermenu,operation,maregister ,bottom},
   
   beforeCreate(){
  
@@ -67,12 +73,7 @@ export default {
   data(){
     return{
       SelectedKeys:[0],
-<<<<<<< HEAD
       department:'',
-=======
-
-      department:'建筑',
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       menu:['业务管理','注册管理'], // menu是资源得获取，在data初始化前
       operationselect:true,
       reselect:false,
@@ -88,6 +89,7 @@ export default {
               case 1:{this.operationselect=false;};break
               default:{this.operationselect=false;this.reselect=false;}
           }
+          console.log(this.operationselect)
           if(this.department==='学院'){
       this.menu=['学院管理','人员管理']
     }
@@ -110,5 +112,9 @@ export default {
 .opelse{
     width: 100%;
     height:100%;
+}
+.operbottom{
+   height: 5%;
+  margin-top: 20px;
 }
 </style>

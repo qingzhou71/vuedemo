@@ -151,6 +151,9 @@ export default {
   // newdepart,
   components: { CollectionCreateForm,signout, editForm},
   beforeCreate(){
+    if(localStorage.getItem('identity')!=='超级管理员'){
+      this.$router.push({path:'/'})
+    }
       // get请求进行数据的初始化，资源，角色，以及数据的处理（数据的处理好像很麻烦）
       fetch(`/api/admin/resource`, {
               method: "GET"
@@ -226,12 +229,7 @@ export default {
   methods: {
     confirm(e) {
         // 删除操作，在这里发起del请求和get请求来刷新列表
-<<<<<<< HEAD
       // console.log(this.dataSource);
-=======
-      console.log(this.dataSource);
-
->>>>>>> fbf915561714e49279c4b80570992e4257e00e6c
       this.dataSource.splice(this.dataSource.length-1,1);
       // console.log(e);
       // dataSource.splice(e,1);

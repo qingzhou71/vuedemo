@@ -4,6 +4,7 @@ import Promise from 'promise-polyfill'
 import login from '@/containers/login'
 import register from '@/containers/register'
 import performance from '@/containers/performance'
+
 import introduction from '@/containers/introduction'
 import center from '@/containers/center'
 import admin from '@/containers/user/admin'
@@ -15,6 +16,18 @@ import manager from '@/containers/user/manager'
 import info from '@/containers/user/info'
 
 import campuses from '@/containers/user/campuses'
+import process from '@/containers/process'
+import both from '@/containers/user/both'
+
+import navigate from '@/containers/navigate'
+import graduate from '@/containers/graduate'
+import guanli from '@/containers/guanli'
+import kejiguanli from '@/containers/kejiguanli'
+import baoweichu from '@/containers/baoweichu'
+import cardcenter from '@/containers/cardcenter'
+import tdguanli from '@/containers/tdguanli'
+import jobguanli from '@/containers/jobguanli'
+import susheguanli from '@/containers/susheguanli'
 
 
 if (!window.Promise) {
@@ -34,6 +47,8 @@ export default new Router({
     { path: '/register', name: 'register', component: register },
     { path: '/performance', name: 'performance', component: performance },
     { path: '/introduction', name: 'introduction', component: introduction },
+    {path:'/process',name:'process',component:process},
+    {path:'/both',name:'both',component:both},
     {
 
       path: '/center',
@@ -98,6 +113,52 @@ export default new Router({
         // }
 
       ]
+    },
+    {
+      path:'/navigate',
+      name:'navigate',
+      component:navigate
+    },
+    {
+      path:'/graduate',
+      name:'graduate',
+      component:graduate
+    },
+    {
+      path:'/guanli',
+      name:'guanli',
+      component:guanli
+    },
+    {
+      path:'/kejiguanli',
+      name:'kejiguanli',
+      component:kejiguanli
+    },
+    {
+      path:'/baoweichu',
+      name:'baoweichu',
+      component:baoweichu
+    },
+   
+    {
+      path:'/cardcenter',
+      name:'cardcenter',
+      component:cardcenter
+    },
+    {
+      path:'/tdguanli',
+      name:'tdguanli',
+      component:tdguanli
+    },
+    {
+      path:'/jobguanli',
+      name:'jobguanli',
+      component:jobguanli
+    },
+    {
+      path:'/susheguanli',
+      name:'susheguanli',
+      component:susheguanli
     }
   ]
 })
