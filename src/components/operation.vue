@@ -15,11 +15,7 @@
         @create="handleCreate"
       />
       <h1>{{department}}详情：</h1>
-<<<<<<< HEAD
       <div v-if="list" class="listboards">
-=======
-      <div v-if="list" class="listboard">
->>>>>>> 5cc64523675eea3a90eee1d063fdcbc75ff6fc44
         <div v-for="(item) in dataSource" :key="item.id" class="resourcelist">
           <h2 v-if='usernameshow'>用户名：{{item.username}}</h2>
           <h2 v-if='dormshow'>用户名：{{item.username}}</h2>

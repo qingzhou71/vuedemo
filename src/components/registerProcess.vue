@@ -37,7 +37,6 @@ export default {
   data() {
     return {
       msgs: this.msg,
-<<<<<<< HEAD
       lat: 1,
       lng: 2,
       timer: "",
@@ -51,21 +50,6 @@ export default {
         height: window.screen.availHeight - 146 + "px"
       },
       currentstep: {}
-=======
-      lat:1,
-      lng:2,
-      timer:'',
-      stuinfo:{},
-      status:{},
-      adminstatus:[],
-      stustatus:[],
-      count:0,
-      campusdata,
-      processstyle:{
-        height:window.screen.availHeight-146+'px'
-      },
-      currentstep:{}
->>>>>>> 5cc64523675eea3a90eee1d063fdcbc75ff6fc44
     };
   },
   methods: {
@@ -108,7 +92,6 @@ export default {
       var walking = new AMap.Walking({
         map: map,
         panel: "panel"
-<<<<<<< HEAD
       });
       //根据起终点坐标规划步行路线
       walking.search([lng, lat], ["108.9008617401", "34.153126515"], function(
@@ -117,13 +100,6 @@ export default {
       ) {
         if (status === "complete") {
           log.success("绘制步行路线完成");
-=======
-    }); 
-    //根据起终点坐标规划步行路线
-    walking.search([lng,lat], ['108.9008617401','34.153126515'], function(status, result) {
-        if (status === 'complete') {
-            log.success('绘制步行路线完成')
->>>>>>> 5cc64523675eea3a90eee1d063fdcbc75ff6fc44
         } else {
           log.error("步行路线数据查询失败" + result);
         }
@@ -459,11 +435,7 @@ export default {
     this.navi(this.lat, this.lng, this.count);
   },
   mounted() {
-<<<<<<< HEAD
     this.maps();
-=======
-     this.maps();
->>>>>>> 5cc64523675eea3a90eee1d063fdcbc75ff6fc44
     console.log(document.documentElement.clientHeight);
     //  setTimeout(()=>{
     //   //  document.documentElement.scrollTop=100;
@@ -471,13 +443,8 @@ export default {
     //    console.log('12345')
     //  },0);
     //  this.timer=setInterval(this.maps,10000);
-<<<<<<< HEAD
     //   定位刷新，控制地图不重载
   }
-=======
-     //   定位刷新，控制地图不重载
-  },
->>>>>>> 5cc64523675eea3a90eee1d063fdcbc75ff6fc44
   // beforeUpdate(){
   //   // this.navi();
   //   console.log(111111)
