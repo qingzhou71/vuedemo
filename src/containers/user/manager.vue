@@ -83,7 +83,6 @@ export default {
   },
   methods:{
       testfunction(key){
-          console.log(key);
           switch(key){
               case 0:{this.operationselect=true;};break
               case 1:{this.operationselect=false;};break

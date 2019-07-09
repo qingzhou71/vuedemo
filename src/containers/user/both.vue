@@ -45,9 +45,6 @@ export default {
       }
   },
   beforeCreate(){
-    // if(localStorage.getItem('identity').slice(-2)!=='学院'){
-    //   alert('去宿舍注册管理')
-    // }
     fetch(`/api/admin/me`,{
         method:'GET'
     }).then(res=>{

@@ -2,7 +2,6 @@
   <div class="personal">
     <div class="title">
       <div>
-        <!-- <img src='../assets/3.jpg'/> -->
       </div>
       <span>姓名：{{infos.name}}</span>
     </div>
@@ -89,8 +88,6 @@ export default {
       fetch(`/api/stu/me`,{
           method:'GET'
       }).then(res=>{
-          console.log(res.body)
-          console.log(res.body.locked);
           return res.json();
       }).then(res=>{
           console.log(res);

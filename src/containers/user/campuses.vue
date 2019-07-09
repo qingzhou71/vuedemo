@@ -66,8 +66,6 @@ line-height: 70px;
   margin-bottom: 40px !important;
   font-size: 18px !important;
   margin-top: 0 !important;
-  /* padding-left: 10px !important; */
-  /* text-align: center; */
 }
 .subItem{
   font-size: 16px !important;
