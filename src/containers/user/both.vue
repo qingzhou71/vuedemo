@@ -53,7 +53,6 @@ export default {
     }).then(res=>{
         return res.json()
     }).then(res=>{
-        // 权限的验证问题
         if(localStorage.getItem('identity')!==res.authorities[0].authority){
             alert('无权限的访问');
         }
